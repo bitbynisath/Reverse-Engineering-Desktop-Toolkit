@@ -63,12 +63,12 @@ def test_navigation_to_all_pages(qapp: QApplication):
 
 
 def test_placeholder_pages_integrity(qapp: QApplication):
-    """Verify placeholder pages are explicitly labeled with their target phase."""
+    """Verify remaining placeholder pages are explicitly labeled with their target phase."""
     config = AppConfig()
     _, window, _ = create_app(argv=[], config=config)
 
+    # In Phase 2, FileAnalyzer is active, so placeholders start from Phase 3
     placeholder_modules = [
-        (PAGE_FILE_ANALYZER, "Phase 2"),
         (PAGE_HEX_VIEWER, "Phase 3"),
         (PAGE_STRING_EXTRACTOR, "Phase 4"),
         (PAGE_PE_ANALYZER, "Phase 5"),
@@ -83,8 +83,21 @@ def test_placeholder_pages_integrity(qapp: QApplication):
         window.navigate_to_page(mod_id)
         widget = window.pages_stack.currentWidget()
         assert isinstance(widget, PlaceholderPage)
-        # Verify placeholder does not claim implementation is done
         assert widget.module_id == mod_id
+
+
+def test_file_analyzer_page_active(qapp: QApplication):
+    """Verify FileAnalyzerPage is fully instantiated and active in Phase 2."""
+    config = AppConfig()
+    _, window, _ = create_app(argv=[], config=config)
+
+    window.navigate_to_page(PAGE_FILE_ANALYZER)
+    widget = window.pages_stack.currentWidget()
+    assert not isinstance(widget, PlaceholderPage)
+    assert widget.module_id == PAGE_FILE_ANALYZER
+    assert hasattr(widget, "load_file")
+    assert hasattr(widget, "btn_select_file")
+    assert hasattr(widget, "btn_export_json")
 
 
 def test_theme_toggling(qapp: QApplication):

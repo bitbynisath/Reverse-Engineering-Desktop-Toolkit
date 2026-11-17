@@ -1,1 +1,28 @@
 """Core analysis and file services."""
+
+from core.services.analysis_service import analyze_file, export_analysis_to_json
+from core.services.file_detection_service import (
+    compare_extension_and_signature,
+    detect_file_signature,
+)
+from core.services.file_service import (
+    format_file_size,
+    format_hex_and_ascii,
+    format_permissions,
+    get_file_metadata,
+    read_header_bytes,
+)
+from core.services.hashing_service import calculate_hashes
+
+__all__ = [
+    "analyze_file",
+    "export_analysis_to_json",
+    "calculate_hashes",
+    "detect_file_signature",
+    "compare_extension_and_signature",
+    "get_file_metadata",
+    "read_header_bytes",
+    "format_hex_and_ascii",
+    "format_file_size",
+    "format_permissions",
+]
