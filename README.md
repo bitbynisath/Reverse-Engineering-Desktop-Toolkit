@@ -1,0 +1,89 @@
+# PyRE Studio
+
+**All-in-One Python Reverse Engineering Desktop Toolkit**
+
+PyRE Studio is an extensible, modular, professional desktop application engineered for legitimate static file inspection, binary analysis, reverse engineering education, debugging, interoperability research, and authorized defensive security analysis.
+
+Built with Python 3.12+ and PySide6 (Qt 6), PyRE Studio operates in a **strictly non-executing, read-only mode**, guaranteeing safe analysis of untrusted binaries.
+
+---
+
+## Current Status: Phase 1 (Desktop Application Foundation)
+
+- **Architecture:** Layered, decoupled desktop architecture separating UI from analysis services.
+- **GUI Engine:** PySide6 with custom dark charcoal/navy and light themes.
+- **Navigation:** Integrated sidebar with categorized access to all core modules.
+- **Dashboard:** Operational overview with quick-action cards, honest empty states, and live environment/dependency inspection.
+- **Settings & Config:** Persistent configuration stored in standard OS user paths, theme switcher, logging level preferences, and real-time dependency status.
+- **Upcoming Modules:** Clearly distinguished and transparently labeled placeholder screens detailing planned capabilities and target dependencies for Phases 2 through 9.
+
+---
+
+## Planned Module Roadmap
+
+| Phase | Module | Status | Planned Capabilities |
+| :--- | :--- | :--- | :--- |
+| **Phase 1** | **Desktop Foundation** | **Completed** | PySide6 shell, navigation sidebar, dashboard, dark/light themes, settings |
+| **Phase 2** | File Analysis Engine | Next Up | Signatures, chunked hashes (MD5, SHA-1, SHA-256), metadata, extension validation |
+| **Phase 3** | Hexadecimal Viewer | Planned | Bounded reads, paging, go-to-offset, hex/ASCII search, byte inspector |
+| **Phase 4** | String Extraction | Planned | ASCII, UTF-8, UTF-16LE extraction, filtering, sorting, TXT/CSV export |
+| **Phase 5** | Windows PE Analyzer | Planned | DOS/PE headers, sections, imports, exports, certificate metadata |
+| **Phase 6** | Capstone Disassembler | Planned | Static x86 / x86-64 machine code disassembly and instruction mapping |
+| **Phase 7** | Python Bytecode Analyzer | Planned | .pyc header inspection, code objects, names, constants, and dis assembly |
+| **Phase 8** | Advanced Analyzers | Planned | ELF, APK, Mach-O, Shannon entropy visualization, YARA scanning |
+| **Phase 9** | Reports & History | Planned | SQLite session history, JSON/CSV/HTML/PDF reporting |
+| **Phase 10** | Release & Packaging | Planned | Windows standalone installer / packaging (PyInstaller) |
+
+---
+
+## Quick Start & Installation
+
+### Requirements
+- Windows 10 or Windows 11 (Cross-platform Linux/macOS compatible)
+- Python 3.12+ (tested on Python 3.14)
+
+### Setup
+
+```bash
+# Clone or navigate to the repository
+cd "desktop toolkit"
+
+# Optional: Create and activate virtual environment
+python -m venv .venv
+.venv\Scripts\activate
+
+# Install Phase 1 dependencies
+pip install -r requirements.txt
+```
+
+### Launching the Application
+
+```bash
+python main.py
+```
+
+### Running Tests
+
+```bash
+pytest
+```
+
+---
+
+## Safe Static Analysis Policy
+
+PyRE Studio treats all inspected files as untrusted:
+1. **Zero Execution:** Never executes or executes sub-processes of analyzed binaries.
+2. **Read-Only Access:** All file handles are opened in read-only binary mode (`rb`).
+3. **Memory Safety:** Files are processed using chunked, bounded reads rather than full RAM loads.
+4. **Data Isolation:** User files are never modified, moved, or deleted by session cleanup.
+
+---
+
+## Documentation Links
+
+- [Architecture Guide](docs/architecture.md)
+- [Installation Guide](docs/installation.md)
+- [User Guide (Phase 1)](docs/user_guide.md)
+- [Development Roadmap](docs/development_roadmap.md)
+- [Security & Safe Analysis Design](docs/security.md)
