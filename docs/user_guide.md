@@ -54,7 +54,36 @@ The **File Analyzer** is a core static analysis module designed to inspect, iden
 
 ---
 
-## 3. Settings Panel
+## 3. Hexadecimal Viewer Module (Phase 3)
+
+The **Hex Viewer** provides high-performance, memory-bounded binary inspection for files of any size without loading entire files into RAM.
+
+### Features & Usage:
+1. **Paging & Navigation:**
+   - Files are rendered in pages (default: 32 rows per page) using bounded reads and memory-mapping (`mmap`).
+   - Use `<< First`, `< Previous`, `Next >`, and `Last >>` or the Page input spinbox to jump between pages instantly.
+   - **Bytes Per Row:** Configure 8, 16, 24, or 32 bytes per row via the dropdown.
+2. **Go to Offset:**
+   - Enter any byte offset in hexadecimal (e.g., `0x1000`, `7F`) or decimal (e.g., `4096`).
+   - Press Enter or click **Go** to immediately calculate the target page, jump to it, and select the corresponding row.
+3. **Pattern Searching:**
+   - Enter raw hexadecimal byte sequences (e.g., `4D 5A 90 00`, `CAFE BABE`, `\x4d\x5a`) or readable UTF-8 text.
+   - Select search mode (**Hex Bytes** or **Text**) and click **Find All**.
+   - Searching runs asynchronously on a background worker thread.
+   - Use **▲ Prev** and **▼ Next** to cycle through all match locations.
+4. **Interactive Byte Inspector:**
+   - Clicking any row in the table populates the Byte Inspector panel at the bottom.
+   - Displays:
+     - **Offset:** Hex (`0x00000000`) and decimal integer.
+     - **Byte Value:** Hex (`0x4D`) and decimal integer (`77`).
+     - **Binary:** 8-bit binary bitmask (`01001101`).
+     - **Character:** Printable ASCII character (`'M'`) or `.` for non-printable bytes.
+     - **UInt16 (LE):** Little-endian 16-bit unsigned integer.
+     - **UInt32 (LE):** Little-endian 32-bit unsigned integer.
+
+---
+
+## 4. Settings Panel
 
 - **Theme Selection:** Choose between Dark (Charcoal/Navy default) and Light themes.
 - **Hex View Preferences:** Configure default bytes-per-row (8, 16, 24, 32).
@@ -66,7 +95,7 @@ The **File Analyzer** is a core static analysis module designed to inspect, iden
 
 ---
 
-## 4. Keyboard Shortcuts
+## 5. Keyboard Shortcuts
 
 - `Ctrl+O`: Open File Dialog (automatically switches to File Analyzer and begins analysis)
 - `Ctrl+,`: Open Settings Page

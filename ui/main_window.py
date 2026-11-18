@@ -171,6 +171,7 @@ class MainWindow(QMainWindow):
         self._add_page(PAGE_FILE_ANALYZER, self.file_analyzer_page)
 
         self.hex_viewer_page = HexViewerPage(self)
+        self.hex_viewer_page.file_loaded.connect(self._on_file_analyzed)
         self._add_page(PAGE_HEX_VIEWER, self.hex_viewer_page)
 
         self.string_extractor_page = StringExtractorPage(self)
@@ -250,6 +251,11 @@ class MainWindow(QMainWindow):
             self.sidebar.select_page(page_id)
             self.lbl_status_msg.setText(f"Viewing {page_id.replace('_', ' ').title()}")
             logger.debug("Navigated to page: %s", page_id)
+
+            # Auto-sync currently analyzed file into Hex Viewer if opened
+            if page_id == PAGE_HEX_VIEWER and self._current_file:
+                if self.hex_viewer_page._current_file != self._current_file:
+                    self.hex_viewer_page.load_file(self._current_file)
         else:
             logger.warning("Attempted to navigate to unknown page id: %s", page_id)
 

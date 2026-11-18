@@ -78,3 +78,4 @@ def get_file_metadata(path: Path) -> FileMetadata:
         is_readable=is_readable,
         is_empty=(size_bytes == 0),
     )
+

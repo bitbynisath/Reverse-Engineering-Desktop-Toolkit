@@ -84,3 +84,4 @@ class FileAnalysisResult:
             "warnings": self.warnings,
             "analysis_timestamp": self.analysis_timestamp,
         }
+
