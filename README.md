@@ -8,14 +8,36 @@ Built with Python 3.12+ and PySide6 (Qt 6), PyRE Studio operates in a **strictly
 
 ---
 
-## Current Status: Phase 1 (Desktop Application Foundation)
+## Current Status: Phase 4 Completed (String Extractor Active)
 
 - **Architecture:** Layered, decoupled desktop architecture separating UI from analysis services.
 - **GUI Engine:** PySide6 with custom dark charcoal/navy and light themes.
 - **Navigation:** Integrated sidebar with categorized access to all core modules.
-- **Dashboard:** Operational overview with quick-action cards, honest empty states, and live environment/dependency inspection.
-- **Settings & Config:** Persistent configuration stored in standard OS user paths, theme switcher, logging level preferences, and real-time dependency status.
-- **Upcoming Modules:** Clearly distinguished and transparently labeled placeholder screens detailing planned capabilities and target dependencies for Phases 2 through 9.
+- **File Analyzer (Phase 2):** Fully active static analysis engine:
+  - File system metadata (exact byte sizes, timestamps, permissions).
+  - Binary signature & magic byte identification (Windows PE, ELF, Mach-O, Python `.pyc`, ZIP/APK, PDF, images, archives, scripts).
+  - Format vs. extension mismatch detection (surfaces disguised executables).
+  - Chunked, memory-bounded cryptographic hashing (`MD5`, `SHA-1`, `SHA-256`, `SHA-512`).
+  - Background multi-threaded processing with progress reporting and cancellation.
+  - JSON metadata report export.
+- **Hexadecimal Viewer (Phase 3):** Fully active high-performance binary viewer:
+  - Memory-bounded reads via `BinaryReader` using `mmap` with buffered fallback.
+  - Paged viewing (e.g. 32 rows/page) supporting multi-gigabyte files without memory spikes.
+  - Configurable bytes per row (8, 16, 24, 32).
+  - Offset column, spaced hex byte columns, and printable ASCII column.
+  - Direct "Go to Offset" navigation (hex `0x...` or decimal).
+  - Background asynchronous pattern search for raw hex sequences and text with Next/Prev cycling.
+  - Interactive Byte Inspector displaying decimal, hex, 8-bit binary, ASCII char, signed int8, uint16 (LE), and uint32 (LE).
+- **String Extractor (Phase 4):** Fully active string extraction and classification engine:
+  - Printable ASCII, UTF-16LE, and multibyte UTF-8 extraction.
+  - Precise byte offset mapping (`0x...`) and length calculation.
+  - Configurable minimum string length (default: 4).
+  - Overlapped chunked scanning (`512 KB` chunks) preventing missed boundary strings.
+  - Real-time instant search filter and encoding filter dropdown.
+  - Sortable results table (by offset, length, encoding, string value).
+  - Export to plain text (`.txt`) and comma-separated values (`.csv`).
+- **Settings & Config:** Persistent configuration stored in standard OS user paths (`~/.pyre-studio/config.json`), theme switcher, logging level preferences, and real-time dependency status.
+- **Upcoming Modules:** Transparently labeled placeholder screens detailing planned capabilities and target dependencies for Phases 5 through 9.
 
 ---
 
@@ -24,10 +46,10 @@ Built with Python 3.12+ and PySide6 (Qt 6), PyRE Studio operates in a **strictly
 | Phase | Module | Status | Planned Capabilities |
 | :--- | :--- | :--- | :--- |
 | **Phase 1** | **Desktop Foundation** | **Completed** | PySide6 shell, navigation sidebar, dashboard, dark/light themes, settings |
-| **Phase 2** | File Analysis Engine | Next Up | Signatures, chunked hashes (MD5, SHA-1, SHA-256), metadata, extension validation |
-| **Phase 3** | Hexadecimal Viewer | Planned | Bounded reads, paging, go-to-offset, hex/ASCII search, byte inspector |
-| **Phase 4** | String Extraction | Planned | ASCII, UTF-8, UTF-16LE extraction, filtering, sorting, TXT/CSV export |
-| **Phase 5** | Windows PE Analyzer | Planned | DOS/PE headers, sections, imports, exports, certificate metadata |
+| **Phase 2** | **File Analysis Engine** | **Completed** | Signatures, chunked hashes (MD5, SHA-1, SHA-256, SHA-512), metadata, extension validation, JSON export |
+| **Phase 3** | **Hexadecimal Viewer** | **Completed** | Bounded reads, mmap paging, go-to-offset, hex/ASCII search, interactive byte inspector |
+| **Phase 4** | **String Extraction** | **Completed** | ASCII, UTF-16LE, UTF-8 extraction, filtering, sorting, TXT/CSV export |
+| **Phase 5** | Windows PE Analyzer | Next Up | DOS/PE headers, sections, imports, exports, certificate metadata |
 | **Phase 6** | Capstone Disassembler | Planned | Static x86 / x86-64 machine code disassembly and instruction mapping |
 | **Phase 7** | Python Bytecode Analyzer | Planned | .pyc header inspection, code objects, names, constants, and dis assembly |
 | **Phase 8** | Advanced Analyzers | Planned | ELF, APK, Mach-O, Shannon entropy visualization, YARA scanning |
@@ -52,7 +74,7 @@ cd "desktop toolkit"
 python -m venv .venv
 .venv\Scripts\activate
 
-# Install Phase 1 dependencies
+# Install dependencies
 pip install -r requirements.txt
 ```
 
@@ -75,7 +97,7 @@ pytest
 PyRE Studio treats all inspected files as untrusted:
 1. **Zero Execution:** Never executes or executes sub-processes of analyzed binaries.
 2. **Read-Only Access:** All file handles are opened in read-only binary mode (`rb`).
-3. **Memory Safety:** Files are processed using chunked, bounded reads rather than full RAM loads.
+3. **Memory Safety:** Files are processed using chunked, bounded reads (default 64 KB/512 KB) and memory mapping (`mmap`) rather than full RAM loads.
 4. **Data Isolation:** User files are never modified, moved, or deleted by session cleanup.
 
 ---
@@ -84,6 +106,6 @@ PyRE Studio treats all inspected files as untrusted:
 
 - [Architecture Guide](docs/architecture.md)
 - [Installation Guide](docs/installation.md)
-- [User Guide (Phase 1)](docs/user_guide.md)
+- [User Guide](docs/user_guide.md)
 - [Development Roadmap](docs/development_roadmap.md)
 - [Security & Safe Analysis Design](docs/security.md)

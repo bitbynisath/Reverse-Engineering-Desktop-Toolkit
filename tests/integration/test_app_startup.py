@@ -63,14 +63,12 @@ def test_navigation_to_all_pages(qapp: QApplication):
 
 
 def test_placeholder_pages_integrity(qapp: QApplication):
-    """Verify placeholder pages are explicitly labeled with their target phase."""
+    """Verify remaining placeholder pages are explicitly labeled with their target phase."""
     config = AppConfig()
     _, window, _ = create_app(argv=[], config=config)
 
+    # In Phase 4, FileAnalyzer, HexViewer, and StringExtractor are active; placeholders start from Phase 5
     placeholder_modules = [
-        (PAGE_FILE_ANALYZER, "Phase 2"),
-        (PAGE_HEX_VIEWER, "Phase 3"),
-        (PAGE_STRING_EXTRACTOR, "Phase 4"),
         (PAGE_PE_ANALYZER, "Phase 5"),
         (PAGE_DISASSEMBLER, "Phase 6"),
         (PAGE_PYTHON_ANALYZER, "Phase 7"),
@@ -83,8 +81,49 @@ def test_placeholder_pages_integrity(qapp: QApplication):
         window.navigate_to_page(mod_id)
         widget = window.pages_stack.currentWidget()
         assert isinstance(widget, PlaceholderPage)
-        # Verify placeholder does not claim implementation is done
         assert widget.module_id == mod_id
+
+
+def test_string_extractor_page_active(qapp: QApplication):
+    """Verify StringExtractorPage is fully instantiated and active in Phase 4."""
+    config = AppConfig()
+    _, window, _ = create_app(argv=[], config=config)
+
+    window.navigate_to_page(PAGE_STRING_EXTRACTOR)
+    widget = window.pages_stack.currentWidget()
+    assert not isinstance(widget, PlaceholderPage)
+    assert widget.module_id == PAGE_STRING_EXTRACTOR
+    assert hasattr(widget, "load_file")
+    assert hasattr(widget, "table")
+    assert hasattr(widget, "btn_browse")
+
+
+def test_hex_viewer_page_active(qapp: QApplication):
+    """Verify HexViewerPage is fully instantiated and active in Phase 3."""
+    config = AppConfig()
+    _, window, _ = create_app(argv=[], config=config)
+
+    window.navigate_to_page(PAGE_HEX_VIEWER)
+    widget = window.pages_stack.currentWidget()
+    assert not isinstance(widget, PlaceholderPage)
+    assert widget.module_id == PAGE_HEX_VIEWER
+    assert hasattr(widget, "load_file")
+    assert hasattr(widget, "hex_table")
+    assert hasattr(widget, "btn_open_file")
+
+
+def test_file_analyzer_page_active(qapp: QApplication):
+    """Verify FileAnalyzerPage is fully instantiated and active in Phase 2."""
+    config = AppConfig()
+    _, window, _ = create_app(argv=[], config=config)
+
+    window.navigate_to_page(PAGE_FILE_ANALYZER)
+    widget = window.pages_stack.currentWidget()
+    assert not isinstance(widget, PlaceholderPage)
+    assert widget.module_id == PAGE_FILE_ANALYZER
+    assert hasattr(widget, "load_file")
+    assert hasattr(widget, "btn_select_file")
+    assert hasattr(widget, "btn_export_json")
 
 
 def test_theme_toggling(qapp: QApplication):
