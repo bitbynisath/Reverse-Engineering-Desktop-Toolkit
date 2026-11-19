@@ -12,9 +12,9 @@ This document tracks the phased implementation gates of PyRE Studio. Each phase 
 | **1** | Desktop Application Foundation | **COMPLETED** | PySide6 shell, sidebar navigation, dashboard, dark/light themes, settings. |
 | **2** | File Analysis Engine | **COMPLETED** | Metadata, magic byte signatures, chunked hashing (MD5/SHA1/SHA256/SHA512), extension mismatch detection, JSON export. |
 | **3** | Hexadecimal Viewer | **COMPLETED** | Memory-bounded reads, mmap streaming, paged hex/ASCII table, go-to-offset, hex/text pattern search, interactive byte inspector. |
-| **4** | String Extraction | **COMPLETED** | Printable ASCII, UTF-16LE, and UTF-8 extraction, offset tracking, real-time filtering, TXT/CSV export, 65/65 tests passing. |
-| **5** | Windows PE Analysis | **READY TO START** | DOS/PE headers, sections, imports, exports, certificate metadata parsing. |
-| **6** | Capstone Disassembly | PENDING | Static x86 / x86-64 machine code disassembly and instruction mapping. |
+| **4** | String Extraction | **COMPLETED** | Printable ASCII, UTF-16LE, and UTF-8 extraction, offset tracking, real-time filtering, TXT/CSV export. |
+| **5** | Windows PE Analysis | **COMPLETED** | DOS/PE headers, sections, imports (IAT), exports (EAT), resources, debug directories, Authenticode certificate metadata, 75/75 tests passing. |
+| **6** | Capstone Disassembly | **READY TO START** | Static x86 / x86-64 machine code disassembly and instruction mapping. |
 | **7** | Python Bytecode Analysis | PENDING | .pyc header inspection, code objects, names, constants, and dis disassembly. |
 | **8** | Advanced Analyzers | PENDING | ELF, APK, Mach-O, Shannon entropy visualization, YARA pattern scanning. |
 | **9** | Reports & History | PENDING | SQLite session database, history search, JSON/CSV/HTML/PDF reporting. |
@@ -22,15 +22,17 @@ This document tracks the phased implementation gates of PyRE Studio. Each phase 
 
 ---
 
-## Phase 4 Acceptance Verification
+## Phase 5 Acceptance Verification
 
-- [x] High-performance extraction of printable ASCII, UTF-16LE, and multibyte UTF-8 strings.
-- [x] Precise byte offset calculation (`0x...`) for every extracted string.
-- [x] Configurable minimum string length (default 4 characters, validated >= 3).
-- [x] Overlapped memory-bounded chunked scanning (`512 KB` chunks) preventing missed strings across boundaries.
-- [x] Non-blocking background worker (`StringWorker` on `QThread`) with progress bar and cooperative cancellation.
-- [x] Real-time table filtering by text query and encoding type ("All", "ASCII", "UTF-16LE", "UTF-8").
-- [x] Numeric sorting by file offset and string length.
-- [x] Export to formatted plain text (`.txt`) and comma-separated values (`.csv`).
-- [x] Safe string rendering ensuring untrusted extracted content is treated strictly as plain text.
-- [x] Comprehensive test suite with 65 passing unit and integration tests.
+- [x] Integration with `pefile` library for robust static inspection of Portable Executables.
+- [x] Parsing of DOS Header, COFF File Header, and Optional Header (PE32 vs PE32+).
+- [x] Machine architecture detection (x86, x86-64, ARM, ARM64) and Subsystem identification (GUI, CUI, Native, POSIX).
+- [x] Compilation timestamp parsing accompanied by clear warnings regarding timestamp spoofing/hash reproducibility.
+- [x] DLL characteristics inspection (ASLR / HighEntropyVA, DEP / NX_COMPAT, SafeSEH, ControlFlowGuard).
+- [x] Section Table analysis: Virtual Address, Virtual Size, Raw Size, Raw Offset, Permissions (R/W/X), Characteristics flags, and Shannon Entropy (0.0 to 8.0).
+- [x] Detection of anomalies: RWX permissions and high-entropy executable sections suggesting packing/encryption.
+- [x] Import Table (IAT) resolution: listing imported dynamic libraries and symbols/ordinals with instant search filtering.
+- [x] Export Table (EAT) resolution: listing exported functions, ordinals, RVAs, and forwarders with instant search filtering.
+- [x] Resource Directory breakdown, Debug Directory CodeView PDB extraction, and Authenticode Digital Signature metadata.
+- [x] Non-blocking background worker (`PEWorker` on `QThread`) with graceful handling of corrupted or non-PE binaries.
+- [x] Comprehensive test suite with 75 passing unit and integration tests including programmatic PE fixtures.

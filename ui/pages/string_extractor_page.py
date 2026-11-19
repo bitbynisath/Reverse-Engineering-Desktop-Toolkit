@@ -121,7 +121,7 @@ class StringExtractorPage(QWidget):
         self.spin_min_len = QSpinBox()
         self.spin_min_len.setRange(3, 64)
         self.spin_min_len.setValue(DEFAULT_MIN_STRING_LEN)
-        self.spin_min_len.setFixedWidth(60)
+        self.spin_min_len.setFixedWidth(80)
         opts_layout.addWidget(self.spin_min_len)
 
         opts_layout.addSpacing(8)

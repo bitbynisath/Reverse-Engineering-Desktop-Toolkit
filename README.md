@@ -8,7 +8,7 @@ Built with Python 3.12+ and PySide6 (Qt 6), PyRE Studio operates in a **strictly
 
 ---
 
-## Current Status: Phase 4 Completed (String Extractor Active)
+## Current Status: Phase 5 Completed (PE Analyzer Active)
 
 - **Architecture:** Layered, decoupled desktop architecture separating UI from analysis services.
 - **GUI Engine:** PySide6 with custom dark charcoal/navy and light themes.
@@ -36,8 +36,16 @@ Built with Python 3.12+ and PySide6 (Qt 6), PyRE Studio operates in a **strictly
   - Real-time instant search filter and encoding filter dropdown.
   - Sortable results table (by offset, length, encoding, string value).
   - Export to plain text (`.txt`) and comma-separated values (`.csv`).
+- **Windows PE Analyzer (Phase 5):** Fully active static PE analysis engine:
+  - DOS Header, COFF File Header, and Optional Header (PE32 / PE32+).
+  - Architecture, Subsystem, Image Base, Entry Point RVA, and Checksum.
+  - Security Mitigations & DLL Characteristics (ASLR, DEP/NX, SafeSEH, CFG).
+  - Section Table with Shannon entropy calculations and RWX/anomaly warnings.
+  - Import Table (IAT) resolution with library grouping and instant API search.
+  - Export Table (EAT) resolution with function names, ordinals, RVAs, and forwarders.
+  - Resource Directory, Debug Directory (PDB file path, GUID), and Authenticode certificate metadata.
 - **Settings & Config:** Persistent configuration stored in standard OS user paths (`~/.pyre-studio/config.json`), theme switcher, logging level preferences, and real-time dependency status.
-- **Upcoming Modules:** Transparently labeled placeholder screens detailing planned capabilities and target dependencies for Phases 5 through 9.
+- **Upcoming Modules:** Transparently labeled placeholder screens detailing planned capabilities and target dependencies for Phases 6 through 9.
 
 ---
 
@@ -49,8 +57,8 @@ Built with Python 3.12+ and PySide6 (Qt 6), PyRE Studio operates in a **strictly
 | **Phase 2** | **File Analysis Engine** | **Completed** | Signatures, chunked hashes (MD5, SHA-1, SHA-256, SHA-512), metadata, extension validation, JSON export |
 | **Phase 3** | **Hexadecimal Viewer** | **Completed** | Bounded reads, mmap paging, go-to-offset, hex/ASCII search, interactive byte inspector |
 | **Phase 4** | **String Extraction** | **Completed** | ASCII, UTF-16LE, UTF-8 extraction, filtering, sorting, TXT/CSV export |
-| **Phase 5** | Windows PE Analyzer | Next Up | DOS/PE headers, sections, imports, exports, certificate metadata |
-| **Phase 6** | Capstone Disassembler | Planned | Static x86 / x86-64 machine code disassembly and instruction mapping |
+| **Phase 5** | **Windows PE Analyzer** | **Completed** | DOS/PE headers, sections, imports (IAT), exports (EAT), resources, debug/PDB, Authenticode certificates |
+| **Phase 6** | Capstone Disassembler | Next Up | Static x86 / x86-64 machine code disassembly and instruction mapping |
 | **Phase 7** | Python Bytecode Analyzer | Planned | .pyc header inspection, code objects, names, constants, and dis assembly |
 | **Phase 8** | Advanced Analyzers | Planned | ELF, APK, Mach-O, Shannon entropy visualization, YARA scanning |
 | **Phase 9** | Reports & History | Planned | SQLite session history, JSON/CSV/HTML/PDF reporting |
