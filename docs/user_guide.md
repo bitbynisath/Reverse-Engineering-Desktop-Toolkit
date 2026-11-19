@@ -73,17 +73,35 @@ The **Hex Viewer** provides high-performance, memory-bounded binary inspection f
    - Use **▲ Prev** and **▼ Next** to cycle through all match locations.
 4. **Interactive Byte Inspector:**
    - Clicking any row in the table populates the Byte Inspector panel at the bottom.
-   - Displays:
-     - **Offset:** Hex (`0x00000000`) and decimal integer.
-     - **Byte Value:** Hex (`0x4D`) and decimal integer (`77`).
-     - **Binary:** 8-bit binary bitmask (`01001101`).
-     - **Character:** Printable ASCII character (`'M'`) or `.` for non-printable bytes.
-     - **UInt16 (LE):** Little-endian 16-bit unsigned integer.
-     - **UInt32 (LE):** Little-endian 32-bit unsigned integer.
+   - Displays offset, byte value (decimal/hex), 8-bit binary bitmask, printable ASCII character, signed int8, uint16 (LE), and uint32 (LE).
 
 ---
 
-## 4. Settings Panel
+## 4. String Extractor Module (Phase 4)
+
+The **String Extractor** extracts human-readable text sequences embedded within binaries, shared libraries, firmware, or scripts.
+
+### Features & Usage:
+1. **Extraction Options:**
+   - **Min Length:** Filter out noise by adjusting the minimum string length (default: 4 chars, range: 3–64).
+   - **Encoding Selection:** Extract **ASCII**, **UTF-16LE** (common in Windows binaries and resource directories), and **UTF-8** multibyte strings independently or concurrently.
+   - Click **Extract Strings** to launch multi-threaded extraction on a background worker.
+2. **Search & Real-time Filtering:**
+   - Filter results in real time using the **Filter** search box (matches string content or hex offsets).
+   - Filter by encoding using the **Encoding** dropdown (`All`, `ASCII`, `UTF-16LE`, `UTF-8`).
+   - Statistics bar displays total matches and per-encoding breakdowns.
+3. **Sorting & Navigation:**
+   - Click any column header (**Offset**, **Length**, **Encoding**, **String Value**) to sort numerically or alphabetically.
+   - Double-click any row to copy the string value to the clipboard.
+4. **Exporting Strings:**
+   - **Export TXT:** Exports filtered or all strings to a plain text file (with file offsets and encoding labels).
+   - **Export CSV:** Exports tabular results to CSV with `Offset`, `Offset_Hex`, `Encoding`, `Length`, and `Value` columns for spreadsheet or automated ingestion.
+5. **Untrusted Content Safety:**
+   - Extracted strings are treated strictly as untrusted data and rendered as unformatted text, avoiding execution or injection risks.
+
+---
+
+## 5. Settings Panel
 
 - **Theme Selection:** Choose between Dark (Charcoal/Navy default) and Light themes.
 - **Hex View Preferences:** Configure default bytes-per-row (8, 16, 24, 32).
@@ -95,7 +113,7 @@ The **Hex Viewer** provides high-performance, memory-bounded binary inspection f
 
 ---
 
-## 5. Keyboard Shortcuts
+## 6. Keyboard Shortcuts
 
 - `Ctrl+O`: Open File Dialog (automatically switches to File Analyzer and begins analysis)
 - `Ctrl+,`: Open Settings Page

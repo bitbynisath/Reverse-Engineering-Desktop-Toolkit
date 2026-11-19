@@ -22,6 +22,12 @@ from core.services.hex_service import (
     offset_to_page,
     parse_hex_pattern,
 )
+from core.services.string_service import (
+    export_strings_to_csv,
+    export_strings_to_txt,
+    extract_strings,
+    filter_strings,
+)
 
 __all__ = [
     "analyze_file",
@@ -41,4 +47,8 @@ __all__ = [
     "offset_to_page",
     "get_hex_page",
     "inspect_byte",
+    "extract_strings",
+    "filter_strings",
+    "export_strings_to_txt",
+    "export_strings_to_csv",
 ]

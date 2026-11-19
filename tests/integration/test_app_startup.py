@@ -67,9 +67,8 @@ def test_placeholder_pages_integrity(qapp: QApplication):
     config = AppConfig()
     _, window, _ = create_app(argv=[], config=config)
 
-    # In Phase 3, FileAnalyzer and HexViewer are active; placeholders start from Phase 4
+    # In Phase 4, FileAnalyzer, HexViewer, and StringExtractor are active; placeholders start from Phase 5
     placeholder_modules = [
-        (PAGE_STRING_EXTRACTOR, "Phase 4"),
         (PAGE_PE_ANALYZER, "Phase 5"),
         (PAGE_DISASSEMBLER, "Phase 6"),
         (PAGE_PYTHON_ANALYZER, "Phase 7"),
@@ -83,6 +82,20 @@ def test_placeholder_pages_integrity(qapp: QApplication):
         widget = window.pages_stack.currentWidget()
         assert isinstance(widget, PlaceholderPage)
         assert widget.module_id == mod_id
+
+
+def test_string_extractor_page_active(qapp: QApplication):
+    """Verify StringExtractorPage is fully instantiated and active in Phase 4."""
+    config = AppConfig()
+    _, window, _ = create_app(argv=[], config=config)
+
+    window.navigate_to_page(PAGE_STRING_EXTRACTOR)
+    widget = window.pages_stack.currentWidget()
+    assert not isinstance(widget, PlaceholderPage)
+    assert widget.module_id == PAGE_STRING_EXTRACTOR
+    assert hasattr(widget, "load_file")
+    assert hasattr(widget, "table")
+    assert hasattr(widget, "btn_browse")
 
 
 def test_hex_viewer_page_active(qapp: QApplication):

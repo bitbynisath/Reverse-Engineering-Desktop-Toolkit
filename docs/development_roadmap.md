@@ -11,9 +11,9 @@ This document tracks the phased implementation gates of PyRE Studio. Each phase 
 | **0** | Project Planning & Environment | **COMPLETED** | Python 3.12+ confirmed, virtual environment, gitignore, pyproject.toml established. |
 | **1** | Desktop Application Foundation | **COMPLETED** | PySide6 shell, sidebar navigation, dashboard, dark/light themes, settings. |
 | **2** | File Analysis Engine | **COMPLETED** | Metadata, magic byte signatures, chunked hashing (MD5/SHA1/SHA256/SHA512), extension mismatch detection, JSON export. |
-| **3** | Hexadecimal Viewer | **COMPLETED** | Memory-bounded reads, mmap streaming, paged hex/ASCII table, go-to-offset, hex/text pattern search, interactive byte inspector, 56/56 tests passing. |
-| **4** | String Extraction | **READY TO START** | ASCII, UTF-8, UTF-16LE extraction, filtering, offset tracking, CSV/TXT export. |
-| **5** | Windows PE Analysis | PENDING | DOS/PE headers, sections, imports, exports, certificate metadata parsing. |
+| **3** | Hexadecimal Viewer | **COMPLETED** | Memory-bounded reads, mmap streaming, paged hex/ASCII table, go-to-offset, hex/text pattern search, interactive byte inspector. |
+| **4** | String Extraction | **COMPLETED** | Printable ASCII, UTF-16LE, and UTF-8 extraction, offset tracking, real-time filtering, TXT/CSV export, 65/65 tests passing. |
+| **5** | Windows PE Analysis | **READY TO START** | DOS/PE headers, sections, imports, exports, certificate metadata parsing. |
 | **6** | Capstone Disassembly | PENDING | Static x86 / x86-64 machine code disassembly and instruction mapping. |
 | **7** | Python Bytecode Analysis | PENDING | .pyc header inspection, code objects, names, constants, and dis disassembly. |
 | **8** | Advanced Analyzers | PENDING | ELF, APK, Mach-O, Shannon entropy visualization, YARA pattern scanning. |
@@ -22,13 +22,15 @@ This document tracks the phased implementation gates of PyRE Studio. Each phase 
 
 ---
 
-## Phase 3 Acceptance Verification
+## Phase 4 Acceptance Verification
 
-- [x] Memory-bounded binary reads via `BinaryReader` using `mmap` with buffered stream fallback.
-- [x] High-performance paged table viewing with custom configurable bytes per row (8, 16, 24, 32).
-- [x] Three-column layout: Offset address (hex), hexadecimal byte tokens, and printable ASCII representation.
-- [x] Paging controls (`<< First`, `< Prev`, Page SpinBox, `Next >`, `Last >>`).
-- [x] Safe "Go to Offset" navigation accepting both hexadecimal (`0x...`) and decimal values with boundary checks.
-- [x] Background asynchronous pattern search for raw hex sequences (`4D 5A ...`) and text strings with Next/Previous match cycling.
-- [x] Interactive Byte Inspector displaying offset, decimal value, hex byte, binary bitmask (8-bit), ASCII character, signed int8, uint16 (LE), and uint32 (LE).
-- [x] Comprehensive test coverage with 56 passing unit and integration tests.
+- [x] High-performance extraction of printable ASCII, UTF-16LE, and multibyte UTF-8 strings.
+- [x] Precise byte offset calculation (`0x...`) for every extracted string.
+- [x] Configurable minimum string length (default 4 characters, validated >= 3).
+- [x] Overlapped memory-bounded chunked scanning (`512 KB` chunks) preventing missed strings across boundaries.
+- [x] Non-blocking background worker (`StringWorker` on `QThread`) with progress bar and cooperative cancellation.
+- [x] Real-time table filtering by text query and encoding type ("All", "ASCII", "UTF-16LE", "UTF-8").
+- [x] Numeric sorting by file offset and string length.
+- [x] Export to formatted plain text (`.txt`) and comma-separated values (`.csv`).
+- [x] Safe string rendering ensuring untrusted extracted content is treated strictly as plain text.
+- [x] Comprehensive test suite with 65 passing unit and integration tests.

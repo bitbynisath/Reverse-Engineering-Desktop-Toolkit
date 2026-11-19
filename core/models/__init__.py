@@ -11,6 +11,7 @@ from core.models.hex_models import (
     HexRow,
     HexSearchResult,
 )
+from core.models.string_models import ExtractedString
 
 __all__ = [
     "FileMetadata",
@@ -20,4 +21,5 @@ __all__ = [
     "HexRow",
     "ByteSelection",
     "HexSearchResult",
+    "ExtractedString",
 ]
