@@ -11,6 +11,17 @@ from core.models.hex_models import (
     HexRow,
     HexSearchResult,
 )
+from core.models.pe_models import (
+    CertificateInfo,
+    DebugDirectoryEntry,
+    ExportedSymbol,
+    ImportedLibrary,
+    ImportedSymbol,
+    PEAnalysisResult,
+    PEHeaderInfo,
+    PESectionInfo,
+    ResourceSummary,
+)
 from core.models.string_models import ExtractedString
 
 __all__ = [
@@ -22,4 +33,13 @@ __all__ = [
     "ByteSelection",
     "HexSearchResult",
     "ExtractedString",
+    "PEHeaderInfo",
+    "PESectionInfo",
+    "ImportedSymbol",
+    "ImportedLibrary",
+    "ExportedSymbol",
+    "ResourceSummary",
+    "DebugDirectoryEntry",
+    "CertificateInfo",
+    "PEAnalysisResult",
 ]
