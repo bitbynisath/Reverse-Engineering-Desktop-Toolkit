@@ -83,6 +83,7 @@ python -m venv .venv
 .venv\Scripts\activate
 
 # Install dependencies
+# Install dependencies
 pip install -r requirements.txt
 ```
 
@@ -106,6 +107,7 @@ PyRE Studio treats all inspected files as untrusted:
 1. **Zero Execution:** Never executes or executes sub-processes of analyzed binaries.
 2. **Read-Only Access:** All file handles are opened in read-only binary mode (`rb`).
 3. **Memory Safety:** Files are processed using chunked, bounded reads (default 64 KB/512 KB) and memory mapping (`mmap`) rather than full RAM loads.
+3. **Memory Safety:** Files are processed using chunked, bounded reads (default 64 KB/512 KB) and memory mapping (`mmap`) rather than full RAM loads.
 4. **Data Isolation:** User files are never modified, moved, or deleted by session cleanup.
 
 ---
@@ -114,6 +116,7 @@ PyRE Studio treats all inspected files as untrusted:
 
 - [Architecture Guide](docs/architecture.md)
 - [Installation Guide](docs/installation.md)
+- [User Guide](docs/user_guide.md)
 - [User Guide](docs/user_guide.md)
 - [Development Roadmap](docs/development_roadmap.md)
 - [Security & Safe Analysis Design](docs/security.md)

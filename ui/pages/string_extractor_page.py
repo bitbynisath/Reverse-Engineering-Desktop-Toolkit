@@ -1,4 +1,5 @@
 """String Extractor Page --- Multilingual String Extraction, Filtering & Export."""
+"""String Extractor Page --- Multilingual String Extraction, Filtering & Export."""
 
 from __future__ import annotations
 
@@ -51,8 +52,61 @@ class NumericTableWidgetItem(QTableWidgetItem):
         if self_val is not None and other_val is not None:
             return self_val < other_val
         return super().__lt__(other)
+import logging
+from pathlib import Path
+
+from PySide6.QtCore import Qt, QThread, Signal
+from PySide6.QtGui import QFont
+from PySide6.QtWidgets import (
+    QApplication,
+    QCheckBox,
+    QComboBox,
+    QFileDialog,
+    QFrame,
+    QHBoxLayout,
+    QHeaderView,
+    QLabel,
+    QLineEdit,
+    QMessageBox,
+    QProgressBar,
+    QPushButton,
+    QSpinBox,
+    QTableWidget,
+    QTableWidgetItem,
+    QVBoxLayout,
+    QWidget,
+)
+
+from app.constants import DEFAULT_MIN_STRING_LEN, PAGE_STRING_EXTRACTOR
+from core.models.string_models import ExtractedString
+from core.services.file_service import format_file_size
+from core.services.string_service import (
+    export_strings_to_csv,
+    export_strings_to_txt,
+    filter_strings,
+)
+from core.validators import validate_file_path
+from ui.widgets.status_banner import StatusBanner
+from workers.string_worker import StringWorker
+
+logger = logging.getLogger(__name__)
 
 
+class NumericTableWidgetItem(QTableWidgetItem):
+    """Table item that sorts numerically based on stored data."""
+
+    def __lt__(self, other: QTableWidgetItem) -> bool:
+        self_val = self.data(Qt.UserRole)
+        other_val = other.data(Qt.UserRole)
+        if self_val is not None and other_val is not None:
+            return self_val < other_val
+        return super().__lt__(other)
+
+
+class StringExtractorPage(QWidget):
+    """Full-featured string extraction screen with filtering and text/CSV export."""
+
+    file_loaded = Signal(str, int)
 class StringExtractorPage(QWidget):
     """Full-featured string extraction screen with filtering and text/CSV export."""
 

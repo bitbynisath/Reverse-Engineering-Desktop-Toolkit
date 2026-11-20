@@ -1,11 +1,18 @@
 # PyRE Studio User Guide
+# PyRE Studio User Guide
 
 This guide documents the user interface and functionality implemented across PyRE Studio.
 
 ---
 
 ## 1. Overview & Interface Layout
+This guide documents the user interface and functionality implemented across PyRE Studio.
 
+---
+
+## 1. Overview & Interface Layout
+
+PyRE Studio is an all-in-one desktop environment for static reverse engineering and binary analysis.
 PyRE Studio is an all-in-one desktop environment for static reverse engineering and binary analysis.
 
 The interface is structured into three primary visual zones:
@@ -21,6 +28,7 @@ The interface is structured into three primary visual zones:
 3. **Main Content Area:**
    - Displays the active module page with smooth switching and honest development state indicators.
 4. **Bottom Status Bar:**
+   - Current application activity state (`Ready`, `Viewing ...`, `Analysis complete`).
    - Current application activity state (`Ready`, `Viewing ...`, `Analysis complete`).
    - Selected target file name.
    - Engine mode indicator (`v0.1.0 | Static Mode`).
@@ -144,4 +152,5 @@ The **Windows PE Analyzer** performs static structural inspection of Portable Ex
 
 - `Ctrl+O`: Open File Dialog (automatically switches to File Analyzer and begins analysis)
 - `Ctrl+,`: Open Settings Page
+- `F1`: Open About & Security Policy Dialog
 - `F1`: Open About & Security Policy Dialog
