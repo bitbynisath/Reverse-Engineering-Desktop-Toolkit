@@ -14,8 +14,9 @@ PyRE Studio follows a modular, layered desktop architecture separating the user 
 |  - HexViewerPage (Paged Hex/ASCII Table, Inspector, Search) |
 |  - StringExtractorPage (ASCII, UTF-16, UTF-8 Table & Export)|
 |  - PEAnalyzerPage (Headers, Sections, IAT, EAT, Resources)  |
+|  - DisassemblerPage (x86/x64 instruction table, search, nav)|
 |  - SettingsPage & AboutDialog                               |
-|  - Module Placeholder Pages (Phases 6-9)                    |
+|  - Module Placeholder Pages (Phases 7-9)                    |
 |  - ThemeManager (QSS Dark / Light stylesheets)              |
 +-------------------------------------------------------------+
                               |
@@ -26,6 +27,7 @@ PyRE Studio follows a modular, layered desktop architecture separating the user 
 |  - HexSearchWorker (Byte/text search on dedicated QThread)  |
 |  - StringWorker (String extraction on dedicated QThread)    |
 |  - PEWorker (Portable Executable parsing on QThread)        |
+|  - DisasmWorker (Capstone disassembly on dedicated QThread) |
 |  - Progress, Finished, and Error Signals                    |
 |  - Non-blocking cooperative cancellation                    |
 +-------------------------------------------------------------+

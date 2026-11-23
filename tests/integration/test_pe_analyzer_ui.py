@@ -47,8 +47,11 @@ def test_pe_analyzer_ui_load_file(qapp: QApplication, tmp_path: Path):
     page.close()
 
 
-def test_pe_analyzer_ui_invalid_file(qapp: QApplication, tmp_path: Path):
+def test_pe_analyzer_ui_invalid_file(qapp: QApplication, tmp_path: Path, monkeypatch):
     """Verify loading non-PE file fails gracefully and maintains clean state."""
+    from PySide6.QtWidgets import QMessageBox
+    monkeypatch.setattr(QMessageBox, "warning", lambda *a, **k: None)
+
     fake = tmp_path / "not_a_pe.bin"
     fake.write_bytes(b"Plain text non-executable file")
 
