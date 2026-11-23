@@ -1,5 +1,6 @@
 """Core typed data models."""
 
+from core.models.disasm_models import DisassembledInstruction, DisassemblyResult
 from core.models.file_models import (
     FileAnalysisResult,
     FileMetadata,
@@ -42,4 +43,6 @@ __all__ = [
     "DebugDirectoryEntry",
     "CertificateInfo",
     "PEAnalysisResult",
+    "DisassembledInstruction",
+    "DisassemblyResult",
 ]

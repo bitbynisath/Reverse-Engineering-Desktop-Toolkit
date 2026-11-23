@@ -95,9 +95,10 @@ def parse_pe(file_path: str | Path) -> PEAnalysisResult:
 
     # Characteristics flags
     char_flags: list[str] = []
-    for flag, bit in pefile.IMAGE_CHARACTERISTICS:
-        if coff.Characteristics & bit:
-            char_flags.append(flag)
+    for flag, bit in pefile.IMAGE_CHARACTERISTICS.items():
+        if isinstance(flag, str) and isinstance(bit, int):
+            if coff.Characteristics & bit:
+                char_flags.append(flag)
 
     is_dll = bool(coff.Characteristics & 0x2000)
     is_driver = bool(coff.Characteristics & 0x1000)
@@ -114,9 +115,11 @@ def parse_pe(file_path: str | Path) -> PEAnalysisResult:
 
     dll_char_flags: list[str] = []
     if opt and hasattr(opt, "DllCharacteristics"):
-        for flag, bit in pefile.DLL_CHARACTERISTICS:
-            if opt.DllCharacteristics & bit:
-                dll_char_flags.append(flag)
+        for flag, bit in pefile.DLL_CHARACTERISTICS.items():
+            if isinstance(flag, str) and isinstance(bit, int):
+                if opt.DllCharacteristics & bit:
+                    clean_flag = flag.removeprefix("IMAGE_DLLCHARACTERISTICS_")
+                    dll_char_flags.append(clean_flag)
 
     header_info = PEHeaderInfo(
         format_type=format_type,
@@ -172,9 +175,10 @@ def parse_pe(file_path: str | Path) -> PEAnalysisResult:
 
         # Extract flags
         sec_flags: list[str] = []
-        for flag, bit in pefile.SECTION_CHARACTERISTICS:
-            if char & bit:
-                sec_flags.append(flag)
+        for flag, bit in pefile.SECTION_CHARACTERISTICS.items():
+            if isinstance(flag, str) and isinstance(bit, int):
+                if char & bit:
+                    sec_flags.append(flag)
 
         sections_list.append(
             PESectionInfo(

@@ -1,5 +1,4 @@
 """String Extractor Page --- Multilingual String Extraction, Filtering & Export."""
-"""String Extractor Page --- Multilingual String Extraction, Filtering & Export."""
 
 from __future__ import annotations
 
@@ -377,7 +376,8 @@ class StringExtractorPage(QWidget):
         self.progress_frame.setVisible(False)
         self.btn_extract.setEnabled(True)
         self.btn_browse.setEnabled(True)
-        QMessageBox.warning(self, "Extraction Error", f"String extraction failed:\n{err_msg}")
+        if "cancel" not in err_msg.lower():
+            QMessageBox.warning(self, "Extraction Error", f"String extraction failed:\n{err_msg}")
 
     def _on_cancel_extraction(self) -> None:
         if self._worker:

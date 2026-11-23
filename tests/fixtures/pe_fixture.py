@@ -57,15 +57,17 @@ def create_minimal_pe(
 
     if is_64bit:
         # Standard fields (24 bytes)
-        struct.pack_into("<HBBIIIIQ", buf, opt_offset, magic, 14, 0, 0x200, 0x200, 0, entry_point, 0x1000)
-        # NT additional fields
-        struct.pack_into("<QIIHHHHIIIIHHQQQQII", buf, opt_offset + 24,
+        struct.pack_into("<HBBIIIII", buf, opt_offset, magic, 14, 0, 0x200, 0x200, 0, entry_point, 0x1000)
+        # NT additional fields (88 bytes)
+        struct.pack_into("<QIIHHHHHHIIIIHHQQQQII", buf, opt_offset + 24,
             image_base, section_align, file_align, 6, 0, 0, 0, 6, 0, 0, size_of_image, size_of_headers,
             0, subsystem, dll_chars, 0x100000, 0x1000, 0x100000, 0x1000, 0, num_rva_and_sizes
         )
     else:
-        struct.pack_into("<HBBIIIII", buf, opt_offset, magic, 14, 0, 0x200, 0x200, 0, entry_point, 0x1000)
-        struct.pack_into("<IIIHHHHIIIIHHIIIIII", buf, opt_offset + 28,
+        # Standard fields (28 bytes)
+        struct.pack_into("<HBBIIIIII", buf, opt_offset, magic, 14, 0, 0x200, 0x200, 0, entry_point, 0x1000, 0x2000)
+        # NT additional fields (68 bytes)
+        struct.pack_into("<IIIHHHHHHIIIIHHIIIIII", buf, opt_offset + 28,
             image_base, section_align, file_align, 6, 0, 0, 0, 6, 0, 0, size_of_image, size_of_headers,
             0, subsystem, dll_chars, 0x100000, 0x1000, 0x100000, 0x1000, 0, num_rva_and_sizes
         )

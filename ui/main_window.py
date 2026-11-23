@@ -173,11 +173,9 @@ class MainWindow(QMainWindow):
 
         self.hex_viewer_page = HexViewerPage(self)
         self.hex_viewer_page.file_loaded.connect(self._on_file_analyzed)
-        self.hex_viewer_page.file_loaded.connect(self._on_file_analyzed)
         self._add_page(PAGE_HEX_VIEWER, self.hex_viewer_page)
 
         self.string_extractor_page = StringExtractorPage(self)
-        self.string_extractor_page.file_loaded.connect(self._on_file_analyzed)
         self.string_extractor_page.file_loaded.connect(self._on_file_analyzed)
         self._add_page(PAGE_STRING_EXTRACTOR, self.string_extractor_page)
 
@@ -186,6 +184,7 @@ class MainWindow(QMainWindow):
         self._add_page(PAGE_PE_ANALYZER, self.pe_analyzer_page)
 
         self.disassembler_page = DisassemblerPage(self)
+        self.disassembler_page.file_loaded.connect(self._on_file_analyzed)
         self._add_page(PAGE_DISASSEMBLER, self.disassembler_page)
 
         self.python_analyzer_page = PythonAnalyzerPage(self)
@@ -267,6 +266,9 @@ class MainWindow(QMainWindow):
             elif page_id == PAGE_PE_ANALYZER and self._current_file:
                 if self.pe_analyzer_page._current_file != self._current_file:
                     self.pe_analyzer_page.load_file(self._current_file)
+            elif page_id == PAGE_DISASSEMBLER and self._current_file:
+                if self.disassembler_page._current_file != self._current_file:
+                    self.disassembler_page.load_file(self._current_file)
         else:
             logger.warning("Attempted to navigate to unknown page id: %s", page_id)
 
