@@ -154,3 +154,70 @@ The **Windows PE Analyzer** performs static structural inspection of Portable Ex
 - `Ctrl+,`: Open Settings Page
 - `F1`: Open About & Security Policy Dialog
 - `F1`: Open About & Security Policy Dialog
+
+
+---
+
+## 6. Disassembler Module (Phase 6)
+
+The **Disassembler** provides static x86 / x86-64 machine code disassembly via the Capstone engine. Target files are **never executed** — all analysis is strictly read-only.
+
+### Opening a File
+
+1. Click **Browse...** to open a native file dialog, or drag-and-drop any binary file onto the page.
+2. The file path label updates to confirm the selection.
+3. The **Disassemble** button becomes active.
+
+### Architecture Mode
+
+| Mode | Description |
+|------|-------------|
+| **Auto (from PE header)** | Reads the PE Optional Header magic value — `0x010B` selects 32-bit; `0x020B` selects 64-bit. |
+| **x86 32-bit** | Forces Capstone `CS_MODE_32` regardless of PE header. |
+| **x86 64-bit** | Forces Capstone `CS_MODE_64` regardless of PE header. |
+
+### Section Selector
+
+When a PE file is loaded and parsed, the **Section** dropdown lists all sections that have raw data on disk — executable sections (R-X, RWX) are sorted first. Select `.text` for the main code section, or any other section you wish to inspect.
+
+Enable **Raw File** mode to treat the entire file as a flat byte stream instead (useful for shellcode or unknown binary blobs).
+
+### Running Disassembly
+
+Click **⚙ Disassemble**. A progress bar appears and the status bar reports activity. Click **Cancel** to abort mid-run. When complete:
+
+- The instruction table populates with decoded instructions.
+- The status bar shows instruction count, section, mode, and byte coverage percentage.
+- If results were capped at the 100,000-instruction safety limit, a truncation warning appears.
+
+### Instruction Table Columns
+
+| Column | Description |
+|--------|-------------|
+| **Offset** | Raw file byte offset of the instruction (`0x00000400`) |
+| **Virtual Address** | Computed VA = image_base + section VA + relative offset |
+| **Raw Bytes** | Uppercase hex bytes, space-separated (`55 48 89 E5`) |
+| **Mnemonic** | Decoded opcode mnemonic (`push`, `mov`, `call`, `ret`) |
+| **Operands** | Decoded operand string (`rbp`, `rax, [rbp - 8]`) |
+
+### Colour Coding
+
+| Colour | Instruction type |
+|--------|-----------------|
+| 🔵 Blue | `call` instructions |
+| 🌹 Rose | Conditional and unconditional `jmp` / `je` / `jne` etc. |
+| 🟢 Green | `ret` / `retn` / `iret` family |
+| 🟠 Peach | Privileged instructions (`in`, `out`, `hlt`, `cli`, etc.) |
+| Teal | All other normal instructions |
+
+### Jump / Call Navigation
+
+Double-click any jump or call instruction to scroll and highlight its target row (when the target address is within the disassembled region). Indirect jumps (e.g. `jmp [rax]`) cannot be resolved statically and display an informational message.
+
+### Search & Filter
+
+Type any text into the **search bar** to instantly hide non-matching rows. The filter applies across all five columns (offset, VA, bytes, mnemonic, operands). Click **Clear** to restore all rows.
+
+### Export
+
+Click **Export TXT** to save the full disassembly listing as a plain text file. The file includes a header with file name, architecture, section, and instruction count, followed by one instruction per line.

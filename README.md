@@ -8,7 +8,7 @@ Built with Python 3.12+ and PySide6 (Qt 6), PyRE Studio operates in a **strictly
 
 ---
 
-## Current Status: Phase 5 Completed (PE Analyzer Active)
+## Current Status: Phase 6 Completed (Disassembler Active)
 
 - **Architecture:** Layered, decoupled desktop architecture separating UI from analysis services.
 - **GUI Engine:** PySide6 with custom dark charcoal/navy and light themes.
@@ -44,8 +44,20 @@ Built with Python 3.12+ and PySide6 (Qt 6), PyRE Studio operates in a **strictly
   - Import Table (IAT) resolution with library grouping and instant API search.
   - Export Table (EAT) resolution with function names, ordinals, RVAs, and forwarders.
   - Resource Directory, Debug Directory (PDB file path, GUID), and Authenticode certificate metadata.
+- **Disassembler (Phase 6):** Fully active static Capstone disassembly engine:
+  - x86 32-bit and x86-64 instruction decoding via Capstone 5.x.
+  - Automatic architecture detection from PE optional header (PE32 -> 32-bit, PE32+ -> 64-bit).
+  - PE section selector — disassembles `.text` or any named section with raw data.
+  - Raw binary mode — disassembles any file as a byte stream.
+  - Colour-coded instruction table: jumps (rose), calls (blue), rets (green), privileged (peach).
+  - Monospaced table: File Offset | Virtual Address | Raw Bytes | Mnemonic | Operands.
+  - Live search/filter across all columns.
+  - Double-click jump/call navigation to target instruction.
+  - Plain text export of full disassembly listing.
+  - 100,000-instruction safety cap with explicit truncation warning.
+  - Non-blocking `DisasmWorker` on `QThread` with progress bar and cancel.
 - **Settings & Config:** Persistent configuration stored in standard OS user paths (`~/.pyre-studio/config.json`), theme switcher, logging level preferences, and real-time dependency status.
-- **Upcoming Modules:** Transparently labeled placeholder screens detailing planned capabilities and target dependencies for Phases 6 through 9.
+- **Upcoming Modules:** Transparently labeled placeholder screens detailing planned capabilities and target dependencies for Phases 7 through 9.
 
 ---
 
@@ -58,7 +70,7 @@ Built with Python 3.12+ and PySide6 (Qt 6), PyRE Studio operates in a **strictly
 | **Phase 3** | **Hexadecimal Viewer** | **Completed** | Bounded reads, mmap paging, go-to-offset, hex/ASCII search, interactive byte inspector |
 | **Phase 4** | **String Extraction** | **Completed** | ASCII, UTF-16LE, UTF-8 extraction, filtering, sorting, TXT/CSV export |
 | **Phase 5** | **Windows PE Analyzer** | **Completed** | DOS/PE headers, sections, imports (IAT), exports (EAT), resources, debug/PDB, Authenticode certificates |
-| **Phase 6** | Capstone Disassembler | Next Up | Static x86 / x86-64 machine code disassembly and instruction mapping |
+| **Phase 6** | **Capstone Disassembler** | **Completed** | Static x86 / x86-64 machine code disassembly, colour-coded instruction table, search/filter, jump navigation, export |
 | **Phase 7** | Python Bytecode Analyzer | Planned | .pyc header inspection, code objects, names, constants, and dis assembly |
 | **Phase 8** | Advanced Analyzers | Planned | ELF, APK, Mach-O, Shannon entropy visualization, YARA scanning |
 | **Phase 9** | Reports & History | Planned | SQLite session history, JSON/CSV/HTML/PDF reporting |
