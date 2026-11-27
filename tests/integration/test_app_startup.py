@@ -63,14 +63,12 @@ def test_navigation_to_all_pages(qapp: QApplication):
 
 
 def test_placeholder_pages_integrity(qapp: QApplication):
-    """Verify remaining placeholder pages are explicitly labeled with their target phase."""
+    """Verify remaining remaining placeholder pages are explicitly labeled with their target phase."""
     config = AppConfig()
     _, window, _ = create_app(argv=[], config=config)
 
-    # In Phase 4, FileAnalyzer, HexViewer, and StringExtractor are active; placeholders start from Phase 5
+    # In Phase 6, FileAnalyzer, HexViewer, StringExtractor, PEAnalyzer, and Disassembler are active
     placeholder_modules = [
-        (PAGE_PE_ANALYZER, "Phase 5"),
-        (PAGE_DISASSEMBLER, "Phase 6"),
         (PAGE_PYTHON_ANALYZER, "Phase 7"),
         (PAGE_ADVANCED_ANALYSIS, "Phase 8"),
         (PAGE_REPORTS, "Phase 9"),
@@ -82,6 +80,20 @@ def test_placeholder_pages_integrity(qapp: QApplication):
         widget = window.pages_stack.currentWidget()
         assert isinstance(widget, PlaceholderPage)
         assert widget.module_id == mod_id
+
+
+def test_pe_analyzer_page_active(qapp: QApplication):
+    """Verify PEAnalyzerPage is fully instantiated and active in Phase 5."""
+    config = AppConfig()
+    _, window, _ = create_app(argv=[], config=config)
+
+    window.navigate_to_page(PAGE_PE_ANALYZER)
+    widget = window.pages_stack.currentWidget()
+    assert not isinstance(widget, PlaceholderPage)
+    assert widget.module_id == PAGE_PE_ANALYZER
+    assert hasattr(widget, "load_file")
+    assert hasattr(widget, "tabs")
+    assert hasattr(widget, "btn_browse")
 
 
 def test_string_extractor_page_active(qapp: QApplication):
@@ -148,3 +160,19 @@ def test_window_resizing(qapp: QApplication):
     window.resize(1366, 768)
     assert window.width() == 1366
     assert window.height() == 768
+
+
+
+def test_disassembler_page_active(qapp: QApplication):
+    """Verify DisassemblerPage is fully instantiated and active in Phase 6."""
+    config = AppConfig()
+    _, window, _ = create_app(argv=[], config=config)
+
+    window.navigate_to_page(PAGE_DISASSEMBLER)
+    widget = window.pages_stack.currentWidget()
+    assert not isinstance(widget, PlaceholderPage)
+    assert widget.module_id == PAGE_DISASSEMBLER
+    assert hasattr(widget, "load_file")
+    assert hasattr(widget, "table")
+    assert hasattr(widget, "btn_browse")
+    assert hasattr(widget, "btn_disassemble")

@@ -8,7 +8,7 @@ Built with Python 3.12+ and PySide6 (Qt 6), PyRE Studio operates in a **strictly
 
 ---
 
-## Current Status: Phase 4 Completed (String Extractor Active)
+## Current Status: Phase 6 Completed (Disassembler Active)
 
 - **Architecture:** Layered, decoupled desktop architecture separating UI from analysis services.
 - **GUI Engine:** PySide6 with custom dark charcoal/navy and light themes.
@@ -36,8 +36,28 @@ Built with Python 3.12+ and PySide6 (Qt 6), PyRE Studio operates in a **strictly
   - Real-time instant search filter and encoding filter dropdown.
   - Sortable results table (by offset, length, encoding, string value).
   - Export to plain text (`.txt`) and comma-separated values (`.csv`).
+- **Windows PE Analyzer (Phase 5):** Fully active static PE analysis engine:
+  - DOS Header, COFF File Header, and Optional Header (PE32 / PE32+).
+  - Architecture, Subsystem, Image Base, Entry Point RVA, and Checksum.
+  - Security Mitigations & DLL Characteristics (ASLR, DEP/NX, SafeSEH, CFG).
+  - Section Table with Shannon entropy calculations and RWX/anomaly warnings.
+  - Import Table (IAT) resolution with library grouping and instant API search.
+  - Export Table (EAT) resolution with function names, ordinals, RVAs, and forwarders.
+  - Resource Directory, Debug Directory (PDB file path, GUID), and Authenticode certificate metadata.
+- **Disassembler (Phase 6):** Fully active static Capstone disassembly engine:
+  - x86 32-bit and x86-64 instruction decoding via Capstone 5.x.
+  - Automatic architecture detection from PE optional header (PE32 -> 32-bit, PE32+ -> 64-bit).
+  - PE section selector — disassembles `.text` or any named section with raw data.
+  - Raw binary mode — disassembles any file as a byte stream.
+  - Colour-coded instruction table: jumps (rose), calls (blue), rets (green), privileged (peach).
+  - Monospaced table: File Offset | Virtual Address | Raw Bytes | Mnemonic | Operands.
+  - Live search/filter across all columns.
+  - Double-click jump/call navigation to target instruction.
+  - Plain text export of full disassembly listing.
+  - 100,000-instruction safety cap with explicit truncation warning.
+  - Non-blocking `DisasmWorker` on `QThread` with progress bar and cancel.
 - **Settings & Config:** Persistent configuration stored in standard OS user paths (`~/.pyre-studio/config.json`), theme switcher, logging level preferences, and real-time dependency status.
-- **Upcoming Modules:** Transparently labeled placeholder screens detailing planned capabilities and target dependencies for Phases 5 through 9.
+- **Upcoming Modules:** Transparently labeled placeholder screens detailing planned capabilities and target dependencies for Phases 7 through 9.
 
 ---
 
@@ -49,8 +69,8 @@ Built with Python 3.12+ and PySide6 (Qt 6), PyRE Studio operates in a **strictly
 | **Phase 2** | **File Analysis Engine** | **Completed** | Signatures, chunked hashes (MD5, SHA-1, SHA-256, SHA-512), metadata, extension validation, JSON export |
 | **Phase 3** | **Hexadecimal Viewer** | **Completed** | Bounded reads, mmap paging, go-to-offset, hex/ASCII search, interactive byte inspector |
 | **Phase 4** | **String Extraction** | **Completed** | ASCII, UTF-16LE, UTF-8 extraction, filtering, sorting, TXT/CSV export |
-| **Phase 5** | Windows PE Analyzer | Next Up | DOS/PE headers, sections, imports, exports, certificate metadata |
-| **Phase 6** | Capstone Disassembler | Planned | Static x86 / x86-64 machine code disassembly and instruction mapping |
+| **Phase 5** | **Windows PE Analyzer** | **Completed** | DOS/PE headers, sections, imports (IAT), exports (EAT), resources, debug/PDB, Authenticode certificates |
+| **Phase 6** | **Capstone Disassembler** | **Completed** | Static x86 / x86-64 machine code disassembly, colour-coded instruction table, search/filter, jump navigation, export |
 | **Phase 7** | Python Bytecode Analyzer | Planned | .pyc header inspection, code objects, names, constants, and dis assembly |
 | **Phase 8** | Advanced Analyzers | Planned | ELF, APK, Mach-O, Shannon entropy visualization, YARA scanning |
 | **Phase 9** | Reports & History | Planned | SQLite session history, JSON/CSV/HTML/PDF reporting |
@@ -75,6 +95,7 @@ python -m venv .venv
 .venv\Scripts\activate
 
 # Install dependencies
+# Install dependencies
 pip install -r requirements.txt
 ```
 
@@ -98,6 +119,7 @@ PyRE Studio treats all inspected files as untrusted:
 1. **Zero Execution:** Never executes or executes sub-processes of analyzed binaries.
 2. **Read-Only Access:** All file handles are opened in read-only binary mode (`rb`).
 3. **Memory Safety:** Files are processed using chunked, bounded reads (default 64 KB/512 KB) and memory mapping (`mmap`) rather than full RAM loads.
+3. **Memory Safety:** Files are processed using chunked, bounded reads (default 64 KB/512 KB) and memory mapping (`mmap`) rather than full RAM loads.
 4. **Data Isolation:** User files are never modified, moved, or deleted by session cleanup.
 
 ---
@@ -106,6 +128,7 @@ PyRE Studio treats all inspected files as untrusted:
 
 - [Architecture Guide](docs/architecture.md)
 - [Installation Guide](docs/installation.md)
+- [User Guide](docs/user_guide.md)
 - [User Guide](docs/user_guide.md)
 - [Development Roadmap](docs/development_roadmap.md)
 - [Security & Safe Analysis Design](docs/security.md)
