@@ -63,7 +63,7 @@ def test_navigation_to_all_pages(qapp: QApplication):
 
 
 def test_placeholder_pages_integrity(qapp: QApplication):
-    """Verify remaining placeholder pages are explicitly labeled with their target phase."""
+    """Verify remaining remaining placeholder pages are explicitly labeled with their target phase."""
     config = AppConfig()
     _, window, _ = create_app(argv=[], config=config)
 
