@@ -191,6 +191,7 @@ class MainWindow(QMainWindow):
         self._add_page(PAGE_DISASSEMBLER, self.disassembler_page)
 
         self.python_analyzer_page = PythonAnalyzerPage(self)
+        self.python_analyzer_page.file_loaded.connect(self._on_file_analyzed)
         self._add_page(PAGE_PYTHON_ANALYZER, self.python_analyzer_page)
 
         self.advanced_analysis_page = AdvancedAnalysisPage(self)
@@ -259,15 +260,7 @@ class MainWindow(QMainWindow):
             self.lbl_status_msg.setText(f"Viewing {page_id.replace('_', ' ').title()}")
             logger.debug("Navigated to page: %s", page_id)
 
-            # Auto-sync currently analyzed file into Hex Viewer or String Extractor if opened
-            if page_id == PAGE_HEX_VIEWER and self._current_file:
-                if self.hex_viewer_page._current_file != self._current_file:
-                    self.hex_viewer_page.load_file(self._current_file)
-            elif page_id == PAGE_STRING_EXTRACTOR and self._current_file:
-                if self.string_extractor_page._current_file != self._current_file:
-                    self.string_extractor_page.load_file(self._current_file)
-
-            # Auto-sync currently analyzed file into Hex Viewer, String Extractor, or PE Analyzer if opened
+            # Auto-sync currently analyzed file into relevant analysis pages if opened
             if page_id == PAGE_HEX_VIEWER and self._current_file:
                 if self.hex_viewer_page._current_file != self._current_file:
                     self.hex_viewer_page.load_file(self._current_file)
@@ -280,6 +273,9 @@ class MainWindow(QMainWindow):
             elif page_id == PAGE_DISASSEMBLER and self._current_file:
                 if self.disassembler_page._current_file != self._current_file:
                     self.disassembler_page.load_file(self._current_file)
+            elif page_id == PAGE_PYTHON_ANALYZER and self._current_file:
+                if self.python_analyzer_page._current_file != self._current_file:
+                    self.python_analyzer_page.load_file(self._current_file)
         else:
             logger.warning("Attempted to navigate to unknown page id: %s", page_id)
 
@@ -289,8 +285,7 @@ class MainWindow(QMainWindow):
             self,
             "Select Target File for Static Analysis",
             self._config.default_analysis_dir,
-            "All Files (*.*);;Executables (*.exe *.dll *.sys *.bin);;Documents (*.pdf *.docx);;Archives (*.zip *.7z *.tar)",
-            "All Files (*.*);;Executables (*.exe *.dll *.sys *.bin);;Documents (*.pdf *.docx);;Archives (*.zip *.7z *.tar)",
+            "All Files (*.*);;Executables (*.exe *.dll *.sys *.bin);;Python Files (*.pyc *.py);;Documents (*.pdf *.docx);;Archives (*.zip *.7z *.tar)",
         )
 
         if not file_path:
@@ -300,7 +295,6 @@ class MainWindow(QMainWindow):
             validated_path = validate_file_path(file_path)
             self._current_file = validated_path
             self.lbl_current_file.setText(f"Current file: {validated_path.name}")
-            self.lbl_status_msg.setText(f"Target selected: {validated_path.name}")
             self.lbl_status_msg.setText(f"Target selected: {validated_path.name}")
             logger.info("File selected for analysis: %s", validated_path)
 

@@ -8,7 +8,7 @@ Built with Python 3.12+ and PySide6 (Qt 6), PyRE Studio operates in a **strictly
 
 ---
 
-## Current Status: Phase 6 Completed (Disassembler Active)
+## Current Status: Phase 7 Completed (Python Bytecode Analyzer Active)
 
 - **Architecture:** Layered, decoupled desktop architecture separating UI from analysis services.
 - **GUI Engine:** PySide6 with custom dark charcoal/navy and light themes.
@@ -56,8 +56,18 @@ Built with Python 3.12+ and PySide6 (Qt 6), PyRE Studio operates in a **strictly
   - Plain text export of full disassembly listing.
   - 100,000-instruction safety cap with explicit truncation warning.
   - Non-blocking `DisasmWorker` on `QThread` with progress bar and cancel.
+- **Python Bytecode Analyzer (Phase 7):** Fully active static Python `.pyc` and `.py` inspection engine:
+  - `.pyc` header parsing, magic number validation, and Python release version mapping (Python 2.0 through 3.14+).
+  - PEP 552 header support: timestamp-based vs hash-based (checked/unchecked) validation and SipHash extraction.
+  - Recursive nested code object discovery (`<module>`, inner functions, classes, closures, generators).
+  - Code object properties and `co_flags` bitmask decoding (`CO_OPTIMIZED`, `CO_NEWLOCALS`, `CO_VARARGS`, `CO_GENERATOR`, etc.).
+  - Constants table (`co_consts`) with type identification and code object cross-referencing.
+  - Variable tables for global names (`co_names`), local variables (`co_varnames`), free variables (`co_freevars`), and cell variables (`co_cellvars`).
+  - Bytecode instruction disassembly via standard library `dis` module with line numbers, byte offsets, opcode mnemonics, arguments, and jump targets.
+  - Non-blocking `PythonWorker` on `QThread` with progress reporting and cancellation.
+  - Plain text export of full Python bytecode disassembly listing.
 - **Settings & Config:** Persistent configuration stored in standard OS user paths (`~/.pyre-studio/config.json`), theme switcher, logging level preferences, and real-time dependency status.
-- **Upcoming Modules:** Transparently labeled placeholder screens detailing planned capabilities and target dependencies for Phases 7 through 9.
+- **Upcoming Modules:** Transparently labeled placeholder screens detailing planned capabilities and target dependencies for Phases 8 through 10.
 
 ---
 
@@ -71,8 +81,8 @@ Built with Python 3.12+ and PySide6 (Qt 6), PyRE Studio operates in a **strictly
 | **Phase 4** | **String Extraction** | **Completed** | ASCII, UTF-16LE, UTF-8 extraction, filtering, sorting, TXT/CSV export |
 | **Phase 5** | **Windows PE Analyzer** | **Completed** | DOS/PE headers, sections, imports (IAT), exports (EAT), resources, debug/PDB, Authenticode certificates |
 | **Phase 6** | **Capstone Disassembler** | **Completed** | Static x86 / x86-64 machine code disassembly, colour-coded instruction table, search/filter, jump navigation, export |
-| **Phase 7** | Python Bytecode Analyzer | Planned | .pyc header inspection, code objects, names, constants, and dis assembly |
-| **Phase 8** | Advanced Analyzers | Planned | ELF, APK, Mach-O, Shannon entropy visualization, YARA scanning |
+| **Phase 7** | **Python Bytecode Analyzer** | **Completed** | .pyc header inspection, magic numbers, code objects, constants, names, flags, and dis disassembly |
+| **Phase 8** | Advanced Analyzers | Next Up | ELF, APK, Mach-O, Shannon entropy visualization, YARA scanning |
 | **Phase 9** | Reports & History | Planned | SQLite session history, JSON/CSV/HTML/PDF reporting |
 | **Phase 10** | Release & Packaging | Planned | Windows standalone installer / packaging (PyInstaller) |
 
@@ -94,7 +104,6 @@ cd "desktop toolkit"
 python -m venv .venv
 .venv\Scripts\activate
 
-# Install dependencies
 # Install dependencies
 pip install -r requirements.txt
 ```

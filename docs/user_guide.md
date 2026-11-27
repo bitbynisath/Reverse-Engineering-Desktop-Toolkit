@@ -136,28 +136,6 @@ The **Windows PE Analyzer** performs static structural inspection of Portable Ex
 
 ---
 
-## 6. Settings Panel
-
-- **Theme Selection:** Choose between Dark (Charcoal/Navy default) and Light themes.
-- **Hex View Preferences:** Configure default bytes-per-row (8, 16, 24, 32).
-- **Analysis Directory:** Set and browse the default directory opened by file dialogs.
-- **String Length:** Configure default minimum string extraction length (default: 4).
-- **Max File Size:** Warning threshold for large binaries (default: 100 MB).
-- **Logging Level:** Adjust logging verbosity (`DEBUG`, `INFO`, `WARNING`, `ERROR`).
-- **Dependency Status Table:** Real-time inspection of required and optional packages.
-
----
-
-## 7. Keyboard Shortcuts
-
-- `Ctrl+O`: Open File Dialog (automatically switches to File Analyzer and begins analysis)
-- `Ctrl+,`: Open Settings Page
-- `F1`: Open About & Security Policy Dialog
-- `F1`: Open About & Security Policy Dialog
-
-
----
-
 ## 6. Disassembler Module (Phase 6)
 
 The **Disassembler** provides static x86 / x86-64 machine code disassembly via the Capstone engine. Target files are **never executed** — all analysis is strictly read-only.
@@ -220,4 +198,67 @@ Type any text into the **search bar** to instantly hide non-matching rows. The f
 
 ### Export
 
-Click **Export TXT** to save the full disassembly listing as a plain text file. The file includes a header with file name, architecture, section, and instruction count, followed by one instruction per line.
+Click **Export TXT** to save the full disassembly listing as a plain text file.
+
+---
+
+## 7. Python Bytecode Analyzer Module (Phase 7)
+
+The **Python Bytecode Analyzer** performs static structural inspection of compiled Python binaries (`.pyc`) and Python source scripts (`.py`). The module operates in a **strictly non-executing mode** via Python's standard `marshal` and `dis` libraries.
+
+### Opening a File
+
+1. Click **Select Python File...** or drag-and-drop any `.pyc` or `.py` file onto the page.
+2. The summary cards populate with target Python version, magic number/validation mode, total code objects, and instruction count.
+
+### Header & Compatibility Inspection
+
+- **Magic Number:** Identifies source Python version (e.g. Python 2.0 through 3.14+).
+- **PEP 552 Validation:** Identifies whether the file is timestamp-based (with source mtime and size) or hash-based (with 64-bit SipHash).
+- **Version Compatibility Warning:** If bytecode was compiled on a different Python release than the running interpreter, a clear status banner highlights potential unmarshalling nuances while still displaying parsed metadata.
+
+### Code Object Hierarchy & Navigation
+
+Compiled Python files often contain nested code objects (functions, methods, classes, lambdas, comprehensions). Use the **Target Code Object** dropdown to switch between:
+- Root module (`<module>`)
+- Top-level and nested functions (`<module> -> my_func`)
+- Classes and member methods (`<module> -> MyClass -> __init__`)
+
+### Tabbed Analysis Views:
+
+1. **Bytecode Disassembly Tab:**
+   - Monospaced instruction listing: Line number, byte offset, opcode mnemonic, raw argument, argument representation, and jump targets.
+   - Colour-coded mnemonics: Jumps (magenta/rose), Returns (green), Calls (cyan/blue), Loads/Stores (yellow/peach).
+   - Live search bar that filters instructions in real time.
+2. **Code Object Properties & Flags Tab:**
+   - Properties: Name, source filename, first line number, total argument count, pos-only args, kw-only args, local variable count, and VM stack size.
+   - `co_flags` badge pills: Visual decoding of active flags (e.g. `CO_OPTIMIZED`, `CO_NEWLOCALS`, `CO_VARARGS`, `CO_VARKEYWORDS`, `CO_GENERATOR`, `CO_COROUTINE`).
+3. **Constants (`co_consts`) Tab:**
+   - Displays all embedded constants with indices, Python data types, and string representations.
+   - Highlights nested code objects with cyan badges.
+4. **Names & Variables Tab:**
+   - Categorized tables for Global/Attribute Names (`co_names`), Local Variables (`co_varnames`), Free Variables (`co_freevars`), and Cell Variables (`co_cellvars`).
+
+### Exporting Disassembly
+
+Click **Export Disassembly** to save a plain text disassembly listing of all code objects or the selected code object.
+
+---
+
+## 8. Settings Panel
+
+- **Theme Selection:** Choose between Dark (Charcoal/Navy default) and Light themes.
+- **Hex View Preferences:** Configure default bytes-per-row (8, 16, 24, 32).
+- **Analysis Directory:** Set and browse the default directory opened by file dialogs.
+- **String Length:** Configure default minimum string extraction length (default: 4).
+- **Max File Size:** Warning threshold for large binaries (default: 100 MB).
+- **Logging Level:** Adjust logging verbosity (`DEBUG`, `INFO`, `WARNING`, `ERROR`).
+- **Dependency Status Table:** Real-time inspection of required and optional packages.
+
+---
+
+## 9. Keyboard Shortcuts
+
+- `Ctrl+O`: Open File Dialog (automatically switches to File Analyzer and begins analysis)
+- `Ctrl+,`: Open Settings Page
+- `F1`: Open About & Security Policy Dialog
