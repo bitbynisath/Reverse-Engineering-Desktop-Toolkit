@@ -13,8 +13,10 @@ PyRE Studio follows a modular, layered desktop architecture separating the user 
 |  - FileAnalyzerPage (Metadata, Signatures, Hashes, Export)  |
 |  - HexViewerPage (Paged Hex/ASCII Table, Inspector, Search) |
 |  - StringExtractorPage (ASCII, UTF-16, UTF-8 Table & Export)|
+|  - PEAnalyzerPage (Headers, Sections, IAT, EAT, Resources)  |
+|  - DisassemblerPage (x86/x64 instruction table, search, nav)|
 |  - SettingsPage & AboutDialog                               |
-|  - Module Placeholder Pages (Phases 5-9)                    |
+|  - Module Placeholder Pages (Phases 7-9)                    |
 |  - ThemeManager (QSS Dark / Light stylesheets)              |
 +-------------------------------------------------------------+
                               |
@@ -24,6 +26,8 @@ PyRE Studio follows a modular, layered desktop architecture separating the user 
 |  - AnalysisWorker (File analysis on dedicated QThread)      |
 |  - HexSearchWorker (Byte/text search on dedicated QThread)  |
 |  - StringWorker (String extraction on dedicated QThread)    |
+|  - PEWorker (Portable Executable parsing on QThread)        |
+|  - DisasmWorker (Capstone disassembly on dedicated QThread) |
 |  - Progress, Finished, and Error Signals                    |
 |  - Non-blocking cooperative cancellation                    |
 +-------------------------------------------------------------+
@@ -40,8 +44,10 @@ PyRE Studio follows a modular, layered desktop architecture separating the user 
 +-------------------------------------------------------------+
                               |
                               v
+                              v
 +-------------------------------------------------------------+
-|                 Analysis Services & Engines                 |
+|                 Analysis Services & Analyzers               |
+|  - PEAnalyzer (pefile: DOS/COFF/Opt headers, IAT, EAT, Rsrc)|
 |  - FileService (Metadata, stat, human formatting, headers)  |
 |  - FileDetectionService (Magic bytes, PE/ELF/ZIP/PDF rules) |
 |  - HashingService (Streaming chunked MD5/SHA1/SHA256/SHA512)|
@@ -51,12 +57,12 @@ PyRE Studio follows a modular, layered desktop architecture separating the user 
 |  - AnalysisService (Unified orchestration & JSON exporter)  |
 +-------------------------------------------------------------+
                               |
-                              v (Phases 5 - 9)
+                              v (Phases 6 - 9)
 +-------------------------------------------------------------+
 |              Downstream Analysis Engines (Planned)          |
-|  - PE / ELF / Mach-O Parsers (pefile, LIEF) (Phases 5, 8)   |
 |  - Capstone Disassembly Engine (Phase 6)                    |
 |  - Python Bytecode (.pyc) Analyzer (Phase 7)                |
+|  - Advanced Multi-Format Analyzers (ELF/APK/Mach-O) (Ph. 8) |
 |  - SQLite Session & History Database (Phase 9)              |
 |  - Multi-Format Report Exporters (Phase 9)                  |
 +-------------------------------------------------------------+
@@ -66,11 +72,12 @@ PyRE Studio follows a modular, layered desktop architecture separating the user 
 
 1. **`app/`**: Contains bootstrapping routines, global constants, configuration dataclasses, and logging setup.
 2. **`ui/`**: Pure PySide6 presentation components. Does not contain raw file analysis or parsing logic.
-3. **`workers/`**: Dedicated `QThread` workers isolating CPU-intensive hashing, streaming, pattern searching, and string scanning from the GUI.
-4. **`core/`**:
-   - `core/models/`: Strongly-typed dataclasses (`FileMetadata`, `FileSignature`, `HashResults`, `FileAnalysisResult`, `HexRow`, `ByteSelection`, `HexSearchResult`, `ExtractedString`).
-   - `core/services/`: Pure Python static analysis and reading logic with zero PySide6 dependencies (`StringService`, `BinaryReader`, `HexService`, `FileService`, `HashingService`, `FileDetectionService`, `AnalysisService`).
-5. **`tests/`**: Unit tests for services and integration tests for UI startup, navigation, and worker pipelines.
+3. **`workers/`**: Dedicated `QThread` workers isolating CPU-intensive hashing, streaming, pattern searching, string extraction, and PE parsing from the GUI.
+4. **`analyzers/`**: Deep format-specific analyzers (`analyzers/pe_analyzer.py`) integrating libraries like `pefile` and `LIEF` with zero UI dependencies.
+5. **`core/`**:
+   - `core/models/`: Strongly-typed dataclasses (`FileMetadata`, `FileSignature`, `HashResults`, `FileAnalysisResult`, `HexRow`, `ByteSelection`, `HexSearchResult`, `ExtractedString`, `PEHeaderInfo`, `PESectionInfo`, `ImportedLibrary`, `ImportedSymbol`, `ExportedSymbol`, `PEAnalysisResult`).
+   - `core/services/`: Pure Python static analysis and reading logic (`StringService`, `BinaryReader`, `HexService`, `FileService`, `HashingService`, `FileDetectionService`, `AnalysisService`).
+6. **`tests/`**: Unit tests for services and integration tests for UI startup, navigation, and worker pipelines.
 
 ## Memory-Bounded Design Principle
 
@@ -78,4 +85,5 @@ To prevent memory bloat or out-of-memory crashes when inspecting multi-gigabyte 
 1. File handles are accessed via `BinaryReader` using OS-level read-only memory mapping (`mmap`).
 2. Display widgets render strictly one page of data (default: 32 rows × 16 bytes = 512 bytes) at a time.
 3. Hash calculations stream through files in bounded 64 KB buffers.
-4. String extraction scans through files in bounded 512 KB chunks with safe boundary overlap, eliminating excessive memory allocations.
+4. String extraction scans through files in bounded 512 KB chunks with safe boundary overlap.
+5. PE structures are parsed as static data structures without loading binaries into execution space.
