@@ -136,7 +136,116 @@ The **Windows PE Analyzer** performs static structural inspection of Portable Ex
 
 ---
 
-## 6. Settings Panel
+## 6. Disassembler Module (Phase 6)
+
+The **Disassembler** provides static x86 / x86-64 machine code disassembly via the Capstone engine. Target files are **never executed** — all analysis is strictly read-only.
+
+### Opening a File
+
+1. Click **Browse...** to open a native file dialog, or drag-and-drop any binary file onto the page.
+2. The file path label updates to confirm the selection.
+3. The **Disassemble** button becomes active.
+
+### Architecture Mode
+
+| Mode | Description |
+|------|-------------|
+| **Auto (from PE header)** | Reads the PE Optional Header magic value — `0x010B` selects 32-bit; `0x020B` selects 64-bit. |
+| **x86 32-bit** | Forces Capstone `CS_MODE_32` regardless of PE header. |
+| **x86 64-bit** | Forces Capstone `CS_MODE_64` regardless of PE header. |
+
+### Section Selector
+
+When a PE file is loaded and parsed, the **Section** dropdown lists all sections that have raw data on disk — executable sections (R-X, RWX) are sorted first. Select `.text` for the main code section, or any other section you wish to inspect.
+
+Enable **Raw File** mode to treat the entire file as a flat byte stream instead (useful for shellcode or unknown binary blobs).
+
+### Running Disassembly
+
+Click **⚙ Disassemble**. A progress bar appears and the status bar reports activity. Click **Cancel** to abort mid-run. When complete:
+
+- The instruction table populates with decoded instructions.
+- The status bar shows instruction count, section, mode, and byte coverage percentage.
+- If results were capped at the 100,000-instruction safety limit, a truncation warning appears.
+
+### Instruction Table Columns
+
+| Column | Description |
+|--------|-------------|
+| **Offset** | Raw file byte offset of the instruction (`0x00000400`) |
+| **Virtual Address** | Computed VA = image_base + section VA + relative offset |
+| **Raw Bytes** | Uppercase hex bytes, space-separated (`55 48 89 E5`) |
+| **Mnemonic** | Decoded opcode mnemonic (`push`, `mov`, `call`, `ret`) |
+| **Operands** | Decoded operand string (`rbp`, `rax, [rbp - 8]`) |
+
+### Colour Coding
+
+| Colour | Instruction type |
+|--------|-----------------|
+| 🔵 Blue | `call` instructions |
+| 🌹 Rose | Conditional and unconditional `jmp` / `je` / `jne` etc. |
+| 🟢 Green | `ret` / `retn` / `iret` family |
+| 🟠 Peach | Privileged instructions (`in`, `out`, `hlt`, `cli`, etc.) |
+| Teal | All other normal instructions |
+
+### Jump / Call Navigation
+
+Double-click any jump or call instruction to scroll and highlight its target row (when the target address is within the disassembled region). Indirect jumps (e.g. `jmp [rax]`) cannot be resolved statically and display an informational message.
+
+### Search & Filter
+
+Type any text into the **search bar** to instantly hide non-matching rows. The filter applies across all five columns (offset, VA, bytes, mnemonic, operands). Click **Clear** to restore all rows.
+
+### Export
+
+Click **Export TXT** to save the full disassembly listing as a plain text file.
+
+---
+
+## 7. Python Bytecode Analyzer Module (Phase 7)
+
+The **Python Bytecode Analyzer** performs static structural inspection of compiled Python binaries (`.pyc`) and Python source scripts (`.py`). The module operates in a **strictly non-executing mode** via Python's standard `marshal` and `dis` libraries.
+
+### Opening a File
+
+1. Click **Select Python File...** or drag-and-drop any `.pyc` or `.py` file onto the page.
+2. The summary cards populate with target Python version, magic number/validation mode, total code objects, and instruction count.
+
+### Header & Compatibility Inspection
+
+- **Magic Number:** Identifies source Python version (e.g. Python 2.0 through 3.14+).
+- **PEP 552 Validation:** Identifies whether the file is timestamp-based (with source mtime and size) or hash-based (with 64-bit SipHash).
+- **Version Compatibility Warning:** If bytecode was compiled on a different Python release than the running interpreter, a clear status banner highlights potential unmarshalling nuances while still displaying parsed metadata.
+
+### Code Object Hierarchy & Navigation
+
+Compiled Python files often contain nested code objects (functions, methods, classes, lambdas, comprehensions). Use the **Target Code Object** dropdown to switch between:
+- Root module (`<module>`)
+- Top-level and nested functions (`<module> -> my_func`)
+- Classes and member methods (`<module> -> MyClass -> __init__`)
+
+### Tabbed Analysis Views:
+
+1. **Bytecode Disassembly Tab:**
+   - Monospaced instruction listing: Line number, byte offset, opcode mnemonic, raw argument, argument representation, and jump targets.
+   - Colour-coded mnemonics: Jumps (magenta/rose), Returns (green), Calls (cyan/blue), Loads/Stores (yellow/peach).
+   - Live search bar that filters instructions in real time.
+2. **Code Object Properties & Flags Tab:**
+   - Properties: Name, source filename, first line number, total argument count, pos-only args, kw-only args, local variable count, and VM stack size.
+   - `co_flags` badge pills: Visual decoding of active flags (e.g. `CO_OPTIMIZED`, `CO_NEWLOCALS`, `CO_VARARGS`, `CO_VARKEYWORDS`, `CO_GENERATOR`, `CO_COROUTINE`).
+3. **Constants (`co_consts`) Tab:**
+   - Displays all embedded constants with indices, Python data types, and string representations.
+   - Highlights nested code objects with cyan badges.
+4. **Names & Variables Tab:**
+   - Categorized tables for Global/Attribute Names (`co_names`), Local Variables (`co_varnames`), Free Variables (`co_freevars`), and Cell Variables (`co_cellvars`).
+
+### Exporting Disassembly
+
+Click **Export Disassembly** to save a plain text disassembly listing of all code objects or the selected code object.
+
+---
+
+## 8. Settings Panel
 
 - **Theme Selection:** Choose between Dark (Charcoal/Navy default) and Light themes.
 - **Hex View Preferences:** Configure default bytes-per-row (8, 16, 24, 32).
@@ -148,11 +257,10 @@ The **Windows PE Analyzer** performs static structural inspection of Portable Ex
 
 ---
 
-## 7. Keyboard Shortcuts
+## 9. Keyboard Shortcuts
 
 - `Ctrl+O`: Open File Dialog (automatically switches to File Analyzer and begins analysis)
 - `Ctrl+,`: Open Settings Page
-- `F1`: Open About & Security Policy Dialog
 - `F1`: Open About & Security Policy Dialog
 
 

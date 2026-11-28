@@ -63,13 +63,12 @@ def test_navigation_to_all_pages(qapp: QApplication):
 
 
 def test_placeholder_pages_integrity(qapp: QApplication):
-    """Verify remaining placeholder pages are explicitly labeled with their target phase."""
+    """Verify remaining remaining placeholder pages are explicitly labeled with their target phase."""
     config = AppConfig()
     _, window, _ = create_app(argv=[], config=config)
 
-    # In Phase 6, FileAnalyzer, HexViewer, StringExtractor, PEAnalyzer, and Disassembler are active
+    # In Phase 7, FileAnalyzer, HexViewer, StringExtractor, PEAnalyzer, Disassembler, and PythonAnalyzer are active
     placeholder_modules = [
-        (PAGE_PYTHON_ANALYZER, "Phase 7"),
         (PAGE_ADVANCED_ANALYSIS, "Phase 8"),
         (PAGE_REPORTS, "Phase 9"),
         (PAGE_HISTORY, "Phase 9"),
@@ -80,6 +79,21 @@ def test_placeholder_pages_integrity(qapp: QApplication):
         widget = window.pages_stack.currentWidget()
         assert isinstance(widget, PlaceholderPage)
         assert widget.module_id == mod_id
+
+
+def test_python_analyzer_page_active(qapp: QApplication):
+    """Verify PythonAnalyzerPage is fully instantiated and active in Phase 7."""
+    config = AppConfig()
+    _, window, _ = create_app(argv=[], config=config)
+
+    window.navigate_to_page(PAGE_PYTHON_ANALYZER)
+    widget = window.pages_stack.currentWidget()
+    assert not isinstance(widget, PlaceholderPage)
+    assert widget.module_id == PAGE_PYTHON_ANALYZER
+    assert hasattr(widget, "load_file")
+    assert hasattr(widget, "tabs")
+    assert hasattr(widget, "btn_browse")
+    assert hasattr(widget, "btn_export_txt")
 
 
 def test_pe_analyzer_page_active(qapp: QApplication):
