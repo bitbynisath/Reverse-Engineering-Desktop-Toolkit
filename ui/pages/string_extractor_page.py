@@ -1,5 +1,4 @@
 """String Extractor Page --- Multilingual String Extraction, Filtering & Export."""
-"""String Extractor Page --- Multilingual String Extraction, Filtering & Export."""
 
 from __future__ import annotations
 

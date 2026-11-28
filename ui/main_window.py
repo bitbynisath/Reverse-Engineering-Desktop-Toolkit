@@ -259,15 +259,7 @@ class MainWindow(QMainWindow):
             self.lbl_status_msg.setText(f"Viewing {page_id.replace('_', ' ').title()}")
             logger.debug("Navigated to page: %s", page_id)
 
-            # Auto-sync currently analyzed file into Hex Viewer or String Extractor if opened
-            if page_id == PAGE_HEX_VIEWER and self._current_file:
-                if self.hex_viewer_page._current_file != self._current_file:
-                    self.hex_viewer_page.load_file(self._current_file)
-            elif page_id == PAGE_STRING_EXTRACTOR and self._current_file:
-                if self.string_extractor_page._current_file != self._current_file:
-                    self.string_extractor_page.load_file(self._current_file)
-
-            # Auto-sync currently analyzed file into Hex Viewer, String Extractor, or PE Analyzer if opened
+            # Auto-sync currently analyzed file into Hex Viewer, String Extractor, PE Analyzer, or Disassembler if opened
             if page_id == PAGE_HEX_VIEWER and self._current_file:
                 if self.hex_viewer_page._current_file != self._current_file:
                     self.hex_viewer_page.load_file(self._current_file)
@@ -290,7 +282,6 @@ class MainWindow(QMainWindow):
             "Select Target File for Static Analysis",
             self._config.default_analysis_dir,
             "All Files (*.*);;Executables (*.exe *.dll *.sys *.bin);;Documents (*.pdf *.docx);;Archives (*.zip *.7z *.tar)",
-            "All Files (*.*);;Executables (*.exe *.dll *.sys *.bin);;Documents (*.pdf *.docx);;Archives (*.zip *.7z *.tar)",
         )
 
         if not file_path:
@@ -301,12 +292,7 @@ class MainWindow(QMainWindow):
             self._current_file = validated_path
             self.lbl_current_file.setText(f"Current file: {validated_path.name}")
             self.lbl_status_msg.setText(f"Target selected: {validated_path.name}")
-            self.lbl_status_msg.setText(f"Target selected: {validated_path.name}")
             logger.info("File selected for analysis: %s", validated_path)
-
-            # Navigate to File Analyzer and start background analysis
-            self.navigate_to_page(PAGE_FILE_ANALYZER)
-            self.file_analyzer_page.load_file(validated_path)
 
             # Navigate to File Analyzer and start background analysis
             self.navigate_to_page(PAGE_FILE_ANALYZER)
@@ -315,11 +301,6 @@ class MainWindow(QMainWindow):
         except (ValidationError, FileAccessError) as exc:
             logger.error("Failed to select file %s: %s", file_path, exc)
             QMessageBox.warning(self, "Invalid File", str(exc))
-
-    def _on_file_analyzed(self, file_name: str, file_size: int) -> None:
-        """Callback when FileAnalyzer completes an analysis."""
-        self.lbl_current_file.setText(f"Current file: {file_name}")
-        self.lbl_status_msg.setText(f"Analysis complete: {file_name} ({file_size} bytes)")
 
     def _on_file_analyzed(self, file_name: str, file_size: int) -> None:
         """Callback when FileAnalyzer completes an analysis."""
