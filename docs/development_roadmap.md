@@ -66,8 +66,6 @@ This document tracks the phased implementation gates of PyRE Studio. Each phase 
 - [x] `test_placeholder_pages_integrity` updated to remove `PAGE_DISASSEMBLER` from placeholder list.
 - [x] `test_disassembler_page_active` added confirming active page contract.
 - [x] Full unit and integration test coverage for disassembly analyzer and UI widget.
-
-
 ---
 
 ## Phase 7 Acceptance Verification

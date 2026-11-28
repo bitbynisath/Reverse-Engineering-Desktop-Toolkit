@@ -46,6 +46,7 @@ PyRE Studio follows a modular, layered desktop architecture separating the user 
 +-------------------------------------------------------------+
                               |
                               v
+                              v
 +-------------------------------------------------------------+
 |                 Analysis Services & Analyzers               |
 |  - PEAnalyzer (pefile: DOS/COFF/Opt headers, IAT, EAT, Rsrc)|

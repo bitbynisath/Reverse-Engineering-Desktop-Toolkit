@@ -302,18 +302,9 @@ class MainWindow(QMainWindow):
             self.navigate_to_page(PAGE_FILE_ANALYZER)
             self.file_analyzer_page.load_file(validated_path)
 
-            # Navigate to File Analyzer and start background analysis
-            self.navigate_to_page(PAGE_FILE_ANALYZER)
-            self.file_analyzer_page.load_file(validated_path)
-
         except (ValidationError, FileAccessError) as exc:
             logger.error("Failed to select file %s: %s", file_path, exc)
             QMessageBox.warning(self, "Invalid File", str(exc))
-
-    def _on_file_analyzed(self, file_name: str, file_size: int) -> None:
-        """Callback when FileAnalyzer completes an analysis."""
-        self.lbl_current_file.setText(f"Current file: {file_name}")
-        self.lbl_status_msg.setText(f"Analysis complete: {file_name} ({file_size} bytes)")
 
     def _on_file_analyzed(self, file_name: str, file_size: int) -> None:
         """Callback when FileAnalyzer completes an analysis."""
