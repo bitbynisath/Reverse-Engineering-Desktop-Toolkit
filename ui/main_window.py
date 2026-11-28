@@ -191,6 +191,7 @@ class MainWindow(QMainWindow):
         self._add_page(PAGE_DISASSEMBLER, self.disassembler_page)
 
         self.python_analyzer_page = PythonAnalyzerPage(self)
+        self.python_analyzer_page.file_loaded.connect(self._on_file_analyzed)
         self._add_page(PAGE_PYTHON_ANALYZER, self.python_analyzer_page)
 
         self.advanced_analysis_page = AdvancedAnalysisPage(self)
@@ -272,6 +273,9 @@ class MainWindow(QMainWindow):
             elif page_id == PAGE_DISASSEMBLER and self._current_file:
                 if self.disassembler_page._current_file != self._current_file:
                     self.disassembler_page.load_file(self._current_file)
+            elif page_id == PAGE_PYTHON_ANALYZER and self._current_file:
+                if self.python_analyzer_page._current_file != self._current_file:
+                    self.python_analyzer_page.load_file(self._current_file)
         else:
             logger.warning("Attempted to navigate to unknown page id: %s", page_id)
 
