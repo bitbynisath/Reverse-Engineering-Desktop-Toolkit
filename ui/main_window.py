@@ -260,7 +260,7 @@ class MainWindow(QMainWindow):
             self.lbl_status_msg.setText(f"Viewing {page_id.replace('_', ' ').title()}")
             logger.debug("Navigated to page: %s", page_id)
 
-            # Auto-sync currently analyzed file into relevant analysis pages if opened
+            # Auto-sync currently analyzed file into Hex Viewer, String Extractor, PE Analyzer, or Disassembler if opened
             if page_id == PAGE_HEX_VIEWER and self._current_file:
                 if self.hex_viewer_page._current_file != self._current_file:
                     self.hex_viewer_page.load_file(self._current_file)
@@ -285,7 +285,7 @@ class MainWindow(QMainWindow):
             self,
             "Select Target File for Static Analysis",
             self._config.default_analysis_dir,
-            "All Files (*.*);;Executables (*.exe *.dll *.sys *.bin);;Python Files (*.pyc *.py);;Documents (*.pdf *.docx);;Archives (*.zip *.7z *.tar)",
+            "All Files (*.*);;Executables (*.exe *.dll *.sys *.bin);;Documents (*.pdf *.docx);;Archives (*.zip *.7z *.tar)",
         )
 
         if not file_path:
